@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { OnsNavigator } from 'ngx-onsenui';
-
-import { Page2Component } from '../../../page2/page2.component';
+import { Page2Component } from '@app/page2/page2.component';
 
 @Component({
   selector: 'ons-page[tab2]',
@@ -24,7 +23,7 @@ export class Tab2Component implements OnInit {
   /**
    * Push page
    */
-  push() {
+  pushPage() {
     this.navi.nativeElement.pushPage(Page2Component);
   }
 

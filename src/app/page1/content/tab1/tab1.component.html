@@ -1,4 +1,17 @@
 <div style="text-align: center; margin: 10px">
-  <p>This is the first tab.</p>
-  <ons-button (click)="pushPage()">Push page</ons-button>
+  <p *ngIf="!isReaderExisted">請插入讀卡機</p>
+  <p *ngIf="!isCardExisted&&isReaderExisted">請插入卡片</p>
+  <div *ngIf="isReaderExisted&&isCardExisted">
+    <p>您的帳號:{{accountID}}</p>
+    <div style="text-align: center; margin: 10px">
+      <ons-button (click)="pushChangePwd()">變更密碼</ons-button>
+    </div>
+    <div style="text-align: center; margin: 10px">
+      <ons-button (click)="pushInquiry()">餘額查詢</ons-button>
+    </div>
+    <div style="text-align: center; margin: 10px">
+      <ons-button (click)="pushTrans()">轉帳交易</ons-button>
+    </div>
+
+  </div>
 </div>

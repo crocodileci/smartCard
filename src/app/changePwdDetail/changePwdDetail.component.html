@@ -1,0 +1,19 @@
+<ons-toolbar>
+  <div class="left">
+    <ons-back-button (click)="backToMainPage()"></ons-back-button>
+  </div>
+  <div class="center">變更密碼結果</div>
+</ons-toolbar>
+<div style="text-align: center; margin: 10px">
+  <div *ngIf="changePwdSuccess">
+    <p>密碼變更成功</p>
+    <p>下次使用卡片時請使用新密碼操作</p>
+  </div>
+  <div *ngIf="!changePwdSuccess">
+    <p>密碼錯誤</p>
+    <p>請重新操作</p>
+  </div>
+  <div style="margin-top: 20px;">
+    <ons-button (click)="backToMainPage()">返回主功能</ons-button>
+  </div>
+</div>

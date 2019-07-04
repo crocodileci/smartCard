@@ -10,12 +10,25 @@ import { ContentComponent } from './page1/content/content.component';
 import { Tab1Component } from './page1/content/tab1/tab1.component';
 import { Tab2Component } from './page1/content/tab2/tab2.component';
 
+import { ChangePwdComponent } from "./changePwd/changePwd.component";
+import { InquiryComponent } from './Inquiry/Inquiry.component';
+import { TransComponent } from './trans/trans.component';
+import { ChangePwdDetailComponent } from './changePwdDetail/changePwdDetail.component';
+import { TransConfirmComponent } from './transConfirm/transConfirm.component';
+import { transConfirmDetailComponent } from './transConfirmDetail/transConfirmDetail.component';
+
 /**
  * Page components
  */
 const pages = [
   Page1Component,
   Page2Component,
+  ChangePwdComponent,
+  ChangePwdDetailComponent,
+  InquiryComponent,
+  TransComponent,
+  TransConfirmComponent,
+  transConfirmDetailComponent,
   SideComponent,
   ContentComponent,
   Tab1Component,

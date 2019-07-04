@@ -1,0 +1,32 @@
+<ons-toolbar>
+  <div class="left">
+    <ons-back-button></ons-back-button>
+  </div>
+  <div class="center">確認轉帳作業</div>
+</ons-toolbar>
+<div style="text-align: center; margin: 10px">
+  <ons-list>
+    <!-- <ons-list-header>Bindings</ons-list-header> -->
+    <ons-list-item>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%; width: 30%; text-align: right;">主帳號:</label>
+      <label>{{this.account.id}}</label>
+    </ons-list-item>
+    <ons-list-item>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉入銀行代號:</label>
+      <label>{{this.transData.issuerBankID}}</label>
+    </ons-list-item>
+    <ons-list-item>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉入帳號:</label>
+      <ons-input type="password" placeholder="密碼" [(value)]="trans_account" style="text-align:center"></ons-input>
+    </ons-list-item>
+    <ons-list-item>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%;">卡片密碼:</label>
+      <ons-input type="password" placeholder="密碼" [(value)]="card_pwd" style="text-align:center">
+      </ons-input>
+    </ons-list-item>
+  </ons-list>
+  <div style="margin-top: 20px;">
+    <ons-button (click)="pushTransDetail()" style="text-align: center; margin-right: 20%;">確認交易</ons-button>
+    <ons-button (click)="popPage()">取消交易</ons-button>
+  </div>
+</div>

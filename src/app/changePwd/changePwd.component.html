@@ -1,0 +1,31 @@
+<ons-toolbar>
+  <div class="left">
+    <ons-back-button></ons-back-button>
+  </div>
+  <div class="center">變更密碼</div>
+</ons-toolbar>
+<div style="text-align: center; margin: 10px">
+  <ons-list>
+    <!-- <ons-list-header>Bindings</ons-list-header> -->
+    <ons-list-item>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%;">輸入舊密碼:</label>
+      <ons-input type="password" placeholder="密碼" [(value)]="olg_pwd" style="text-align:center"></ons-input>
+    </ons-list-item>
+    <ons-list-item>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%;">輸入新密碼:</label>
+      <ons-input type="password" placeholder="密碼" [(value)]="new_pwd1" style="text-align:center"></ons-input>
+    </ons-list-item>
+    <ons-list-item>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%;">再次新密碼:</label>
+      <ons-input type="password" placeholder="密碼" [(value)]="new_pwd2" style="text-align:center">
+      </ons-input>
+    </ons-list-item>
+    <!-- <ons-list-item>
+      <label style="height: 31px; line-height: 31px;">已輸入 {{pwd.length}} 位密碼</label>
+    </ons-list-item> -->
+  </ons-list>
+  <div style="margin-top: 20px;">
+    <ons-button (click)="pushChangeDetail()" style="text-align: center; margin-right: 20%;">變更密碼</ons-button>
+    <ons-button (click)="popPage()">取消變更</ons-button>
+  </div>
+</div>

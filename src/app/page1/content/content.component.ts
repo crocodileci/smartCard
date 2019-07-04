@@ -12,11 +12,11 @@ import { Tab2Component } from './tab2/tab2.component';
 export class ContentComponent implements OnInit {
   // Tabs
   tabs = [{
-    label: 'Tab 1',
+    label: '主選單',
     icon: 'ion-home',
     page: Tab1Component,
   }, {
-    label: 'Tab 2',
+    label: '設定',
     icon: 'ion-gear-a',
     page: Tab2Component,
   }];
