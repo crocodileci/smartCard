@@ -1,0 +1,11 @@
+<div id="numKeyboard">
+  <div class="ht-c-keyboard ht-c-keyboard--num ht-u-user-select-none" id="softkeys">
+    <span class="confirm-btn" (click)="confirmClick()">確認</span>
+    <div class="ht-c-keyboard__softkeys d-flex flex-wrap align-items-center justify-content-center {{isUppercase ? 'ht-t-uppercase' : ''}}">
+      <ng-container *ngFor="let key of keyboardOrder">
+        <span *ngIf="key != 'confirm' && key != 'delete'" (click)="itemClick(key)">{{key}}</span>
+        <span *ngIf="key == 'delete'" class="delete-btn" (click)="delClick()">&nbsp;</span>
+      </ng-container>
+    </div>
+  </div>
+</div>

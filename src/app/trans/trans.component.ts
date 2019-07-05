@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OnsNavigator } from 'ngx-onsenui';
+import { OnsNavigator, Params } from 'ngx-onsenui';
 import { TransConfirmComponent } from '@app/transConfirm/transConfirm.component';
 
 interface Option {
@@ -23,7 +23,7 @@ interface TransData{
 })
 
 export class TransComponent implements OnInit {
-  account= {
+  card_info= {
     id:"1234567890",
     bankID:741
   }
@@ -64,7 +64,9 @@ export class TransComponent implements OnInit {
   /**
    * Constructor
    */
-  constructor(private navi: OnsNavigator) { }
+  constructor(private navi: OnsNavigator, private _param: Params) {
+    this.card_info = _param.data;
+  }
 
   /**
    * Initialize
@@ -78,7 +80,7 @@ export class TransComponent implements OnInit {
    */
   pushTransConfirm(){
     this.transData.issuerBankID = "006";
-    this.transData.accountId = this.account.id;
+    this.transData.accountId = this.card_info.id;
     this.transData.transBankID = this.transBankID;
     this.transData.transAccount = this.trans_account;
     this.transData.amount = this.amount;

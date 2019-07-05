@@ -29,3 +29,6 @@
     <ons-button (click)="popPage()">取消變更</ons-button>
   </div>
 </div>
+
+<ht-keyboard-num *ngIf="isShowKeyboard" [nowValue]="keypard_init_value" (resultValue)="getkeyboardNumVal($event)"
+  (onCloseKeyboard)="onClosekeyboardNum($event)"></ht-keyboard-num>

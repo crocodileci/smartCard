@@ -2,7 +2,7 @@
   <p *ngIf="!isReaderExisted">請插入讀卡機</p>
   <p *ngIf="!isCardExisted&&isReaderExisted">請插入卡片</p>
   <div *ngIf="isReaderExisted&&isCardExisted">
-    <p>您的帳號:{{accountID}}</p>
+    <p>您的帳號:{{card_info.mainAccount}}</p>
     <div style="text-align: center; margin: 10px">
       <ons-button (click)="pushChangePwd()">變更密碼</ons-button>
     </div>

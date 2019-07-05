@@ -11,21 +11,25 @@ import { Tab1Component } from './page1/content/tab1/tab1.component';
 import { Tab2Component } from './page1/content/tab2/tab2.component';
 
 import { ChangePwdComponent } from "./changePwd/changePwd.component";
-import { InquiryComponent } from './Inquiry/Inquiry.component';
+import { InquiryComponent } from './inquiry/inquiry.component';
 import { TransComponent } from './trans/trans.component';
 import { ChangePwdDetailComponent } from './changePwdDetail/changePwdDetail.component';
 import { TransConfirmComponent } from './transConfirm/transConfirm.component';
 import { transConfirmDetailComponent } from './transConfirmDetail/transConfirmDetail.component';
+import { InquiryDetailComponent } from './inquiryDetail/inquiryDetail.component';
+import { HtKeyBoardNumComponent } from './number_keyboard/keyboard-num.component';
 
 /**
  * Page components
  */
 const pages = [
+  HtKeyBoardNumComponent,
   Page1Component,
   Page2Component,
   ChangePwdComponent,
   ChangePwdDetailComponent,
   InquiryComponent,
+  InquiryDetailComponent,
   TransComponent,
   TransConfirmComponent,
   transConfirmDetailComponent,

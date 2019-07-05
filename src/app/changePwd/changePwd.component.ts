@@ -3,7 +3,7 @@ import {
   OnInit
 } from '@angular/core';
 import {
-  OnsNavigator
+  OnsNavigator, Params
 } from 'ngx-onsenui';
 import {
   ChangePwdDetailComponent
@@ -15,6 +15,12 @@ import {
   styleUrls: ['./changePwd.component.scss']
 })
 export class ChangePwdComponent implements OnInit {
+
+  /**
+   * 卡片資訊
+   */
+  card_info = null;
+
   olg_pwd = "";
   new_pwd1 = "";
   new_pwd2 = "";
@@ -22,7 +28,9 @@ export class ChangePwdComponent implements OnInit {
   /**
    * Constructor
    */
-  constructor(private navi: OnsNavigator) {}
+  constructor(private navi: OnsNavigator, private _param: Params) {
+    this.card_info = _param.data;
+  }
 
   /**
    * Initialize
