@@ -21,6 +21,8 @@ export class ChangePwdComponent implements OnInit {
    */
   card_info = null;
 
+  isShowKeyboard = false;
+
   olg_pwd = "";
   new_pwd1 = "";
   new_pwd2 = "";
