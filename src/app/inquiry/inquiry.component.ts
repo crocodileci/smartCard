@@ -15,6 +15,7 @@ import { InquiryDetailComponent } from '@app/inquiryDetail/inquiryDetail.compone
 export class InquiryComponent implements OnInit {
 
   isShowKeyboard = false;
+  // isShowKeyboard;
 
   /**
    * 卡片資訊
@@ -39,7 +40,7 @@ export class InquiryComponent implements OnInit {
   /**
    * Initialize
    */
-  ngOnInit() {}
+  ngOnInit() { }
 
   /**
    * Pop page
@@ -56,7 +57,7 @@ export class InquiryComponent implements OnInit {
     });
   }
 
-  showNumKeyboard(){
+  showNumKeyboard() {
     console.log("show keyboard");
     this.isShowKeyboard = true;
     this.card_pwd = "";

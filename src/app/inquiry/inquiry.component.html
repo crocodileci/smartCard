@@ -9,7 +9,7 @@
     <ons-list-header>帳號 - {{card_info.id}}</ons-list-header>
     <ons-list-item>
       <label style="height: 31px; line-height: 31px; margin-right: 5%;">輸入卡片密碼:</label>
-      <div (click)="showNumKeyboard()">
+      <div (click)="showNumKeyboard()" id="input_for_keyboard">
         <ons-input type="text" placeholder="密碼" [(value)]="card_pwd" style="text-align:center" readonly></ons-input>
       </div>
     </ons-list-item>
@@ -23,6 +23,5 @@
   </div>
 </div>
 
-<ht-keyboard-num *ngIf="isShowKeyboard" [nowValue]="card_pwd" (resultValue)="getkeyboardNumVal($event)"
+<ht-keyboard-num [nowValue]="card_pwd" [isOpen]="isShowKeyboard" (resultValue)="getkeyboardNumVal($event)"
   (onCloseKeyboard)="onClosekeyboardNum($event)"></ht-keyboard-num>
-
