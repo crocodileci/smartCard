@@ -22,11 +22,30 @@ export class HtKeyBoardNumComponent implements OnInit {
 
   ngOnInit() {
     if (this.keyboardOrder == undefined) {
-      this.keyboardOrder = [1, 2, 3, 4, 5, 6, 7, 8, 9, '', 0, 'delete', 'confirm'];
+      this.keyboardOrder = this.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).concat(['', 0, 'delete', 'confirm']);
     }
     if (typeof this.keyboardOrder == 'string') {
       this.keyboardOrder = this.keyboardOrder.replace(/\s+/g, "").split(",");
     }
+  }
+
+  shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
   }
 
   ngOnChanges(): void {
@@ -41,10 +60,13 @@ export class HtKeyBoardNumComponent implements OnInit {
   }
 
   openKeyboard() {
-    setTimeout(() => {
-      this.isKeyboardActive = true;
-      this.document.addEventListener('click', this.closeKeyboard, false);
-    }, 0);
+    if(!this.isKeyboardActive){
+      setTimeout(() => {
+        this.isKeyboardActive = true;
+        this.document.addEventListener('click', this.closeKeyboard, false);
+        this.keyboardOrder = this.shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]).concat(['', 0, 'delete', 'confirm']);
+      }, 0);
+    }
     setTimeout(() => {
     })
   }
