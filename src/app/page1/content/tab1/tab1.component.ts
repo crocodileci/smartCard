@@ -1,10 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, NgZone } from '@angular/core';
 import { OnsNavigator } from 'ngx-onsenui';
 
 import { ChangePwdComponent } from '@app/changePwd/changePwd.component';
 import { InquiryComponent } from '@app/inquiry/inquiry.component';
 import { TransComponent } from '@app/trans/trans.component';
 import { detectChanges } from '@angular/core/src/render3';
+import * as ons from 'onsenui';
+
+
+declare var hitrust:any;
+
+declare const navigator: Navigator;
 
 interface CardInfo {
   mainAccount: string; //卡片中的主帳號
@@ -42,16 +48,40 @@ export class Tab1Component implements OnInit {
   /**
    * Constructor
    */
-  constructor(private navi: OnsNavigator) { }
+  constructor(private navi: OnsNavigator, private zone: NgZone) { }
 
 
   /**
    * Initialize
    */
   ngOnInit() {
+    var self = this;
+    if(ons.isWebView()){
+      ons.ready(function () {
+        // deviceready event is fired
+        // Call whatever Cordova APIs
+        console.log("cordova ready");
 
-    this.checkReader();
-    this.checkCard();
+        hitrust.plugins.cardReader.isReaderExisted(function(isExisted){
+          console.log(isExisted ? "Reader existed" : "Reader not existed");
+          self.zone.run(()=>{
+            self.isReaderExisted = isExisted;
+          })
+
+          hitrust.plugins.cardReader.isCardExisted(function (isExisted) {
+            console.log(isExisted ? "Card existed" : "Card not existed");
+            self.zone.run(() => {
+              self.isCardExisted = isExisted;
+            });
+          }, function(error){
+            console.log(error);
+          })
+        }, function(error){console.log(error)});
+      });
+    }else{
+      this.checkReader();
+      this.checkCard();
+    }
 
   }
 
@@ -99,6 +129,8 @@ export class Tab1Component implements OnInit {
       data: this.card_info
     });
   }
+
+
 
 
   
