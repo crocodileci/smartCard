@@ -6,11 +6,9 @@ import { InquiryComponent } from '@app/inquiry/inquiry.component';
 import { TransComponent } from '@app/trans/trans.component';
 import { detectChanges } from '@angular/core/src/render3';
 import * as ons from 'onsenui';
-
+import { fromEvent } from 'rxjs';
 
 declare var hitrust:any;
-
-declare const navigator: Navigator;
 
 interface CardInfo {
   mainAccount: string; //卡片中的主帳號
@@ -55,27 +53,28 @@ export class Tab1Component implements OnInit {
    * Initialize
    */
   ngOnInit() {
-    var self = this;
     if(ons.isWebView()){
-      ons.ready(function () {
+      ons.ready(() => {
         // deviceready event is fired
         // Call whatever Cordova APIs
         console.log("cordova ready");
 
-        hitrust.plugins.cardReader.isReaderExisted(function(isExisted){
+        hitrust.plugins.cardReader.isReaderExisted((isExisted)=>{
           console.log(isExisted ? "Reader existed" : "Reader not existed");
-          self.zone.run(()=>{
-            self.isReaderExisted = isExisted;
+          this.zone.run(()=>{
+            this.isReaderExisted = isExisted;
           })
 
-          hitrust.plugins.cardReader.isCardExisted(function (isExisted) {
+          hitrust.plugins.cardReader.isCardExisted((isExisted) => {
             console.log(isExisted ? "Card existed" : "Card not existed");
-            self.zone.run(() => {
-              self.isCardExisted = isExisted;
+            this.zone.run(() => {
+              this.isCardExisted = isExisted;
             });
           }, function(error){
             console.log(error);
           })
+
+          this.registerEvent();
         }, function(error){console.log(error)});
       });
     }else{
@@ -128,6 +127,38 @@ export class Tab1Component implements OnInit {
     this.navi.nativeElement.pushPage(TransComponent, {
       data: this.card_info
     });
+  }
+
+  registerEvent(){
+    fromEvent(window, 'readerdetached').subscribe(()=>{
+      console.log("readerdetached");
+      this.zone.run(() => {
+        this.isReaderExisted = false;
+      });
+    });
+
+    fromEvent(window, 'readerattached').subscribe(()=>{
+      console.log("readerattached");
+      this.zone.run(() => {
+        this.isReaderExisted = true;
+      });
+    });
+
+    fromEvent(window, 'carddetached').subscribe(()=>{
+      console.log("carddetached");
+      this.zone.run(() => {
+        this.isCardExisted = false;
+      });
+    });
+
+    fromEvent(window, 'cardattached').subscribe(()=>{
+      console.log("cardattached");
+      this.zone.run(() => {
+        this.isCardExisted = true;
+      });
+    });
+
+
   }
 
 
