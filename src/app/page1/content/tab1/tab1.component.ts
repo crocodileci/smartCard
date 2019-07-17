@@ -11,11 +11,8 @@ import { fromEvent } from 'rxjs';
 declare var hitrust:any;
 
 interface CardInfo {
-  mainAccount: string; //卡片中的主帳號
-  account?: string;     //交易要使用的帳號,一卡多帳號會與sMainAccount不同
-  accountIndex?: string;  //一卡多帳號中的index
-  issueNo: string;     //卡片發行行,發行銀行代碼
-  remark?: string;      //卡片中的註記欄位
+  issuer: string, 
+  mainAccount: string
 }
 
 @Component({
@@ -29,9 +26,9 @@ export class Tab1Component implements OnInit {
    * 卡片資訊
    */
   card_info: CardInfo = {
-    mainAccount: "1234567890",
-    issueNo: "006",
-  }
+    issuer: "",
+    mainAccount: ""
+  };
 
   /**
    * 讀卡機是否存在
@@ -68,6 +65,7 @@ export class Tab1Component implements OnInit {
           hitrust.plugins.cardReader.isCardExisted((isExisted) => {
             console.log(isExisted ? "Card existed" : "Card not existed");
             this.zone.run(() => {
+              this.readAccount();
               this.isCardExisted = isExisted;
             });
           }, function(error){
@@ -155,10 +153,16 @@ export class Tab1Component implements OnInit {
       console.log("cardattached");
       this.zone.run(() => {
         this.isCardExisted = true;
+        this.readAccount();
       });
     });
+  }
 
-
+  readAccount(){
+    hitrust.plugins.cardReader.getCardInfo((cardInfo: CardInfo)=>{
+      console.log("cardInfo: " + cardInfo);
+      this.card_info = cardInfo;
+    })
   }
 
 
