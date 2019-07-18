@@ -28,7 +28,7 @@ export class Tab1Component implements OnInit {
    */
   card_info: CardInfo = {
     issuer: "",
-    mainAccount: ""
+    mainAccount: "1234567890"
   };
 
   /**
