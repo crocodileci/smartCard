@@ -8,13 +8,9 @@ import { detectChanges } from '@angular/core/src/render3';
 import * as ons from 'onsenui';
 import { fromEvent, Subscription } from 'rxjs';
 import { TouchSequence } from 'selenium-webdriver';
+import { CardInfo } from '@app/model/CardInfo';
 
 declare var hitrust:any;
-
-interface CardInfo {
-  issuer: string, 
-  mainAccount: string
-}
 
 @Component({
   selector: 'ons-page[tab1]',
@@ -27,7 +23,10 @@ export class Tab1Component implements OnInit {
    * 卡片資訊
    */
   card_info: CardInfo = {
-    issuer: "",
+    issuer: {
+      id: "006",
+      label: "006 合庫商銀"
+    },
     mainAccount: "1234567890"
   };
 
@@ -185,10 +184,17 @@ export class Tab1Component implements OnInit {
   }
 
   readAccount(){
-    hitrust.plugins.cardReader.getCardInfo((cardInfo: CardInfo)=>{
+    hitrust.plugins.cardReader.getCardInfo((cardInfo: any)=>{
       console.log("readAccount");
       console.log("cardInfo: " + cardInfo);
-      this.card_info = cardInfo;
+
+      //修改card model
+      // card_info: CardInfo = {
+      //   issuer: "",
+      //   mainAccount: ""
+      // };
+      this.card_info.issuer.id = cardInfo.issuer;
+      this.card_info.mainAccount = cardInfo.mainAccount;
     })
   }
 
