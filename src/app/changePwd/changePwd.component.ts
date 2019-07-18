@@ -27,8 +27,10 @@ export class ChangePwdComponent implements OnInit {
   card_info = null;
 
   isShowKeyboard = false;
+  pad_value;
+  input_target="";
 
-  olg_pwd = "";
+  old_pwd = "";
   new_pwd1 = "";
   new_pwd2 = "";
 
@@ -92,6 +94,35 @@ export class ChangePwdComponent implements OnInit {
           }
         });
       }
+
+    }
+  }
+
+  showNumKeyboard(e) {
+    console.log("show keyboard");
+    console.log(e);
+    this.isShowKeyboard = true;
+    
+    //紀錄操作哪個input元件
+    this.input_target = e;
+    //初始化鍵盤的狀態
+    this.pad_value = "";
+    this[e] = "";
+  }
+
+  onClosekeyboardNum(e) {
+    if (e) {
+      this.isShowKeyboard = false;
+    }
+  }
+
+  getkeyboardNumVal(e) {
+    console.log(`getkeyboardNumVal: ${e}`)
+    this.pad_value = e;
+
+    //把結果塞回input變數中
+    this.zone.run(() => {
+      this[this.input_target] = e;
     });
   }
 
