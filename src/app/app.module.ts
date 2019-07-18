@@ -18,6 +18,7 @@ import { TransConfirmComponent } from './transConfirm/transConfirm.component';
 import { transConfirmDetailComponent } from './transConfirmDetail/transConfirmDetail.component';
 import { InquiryDetailComponent } from './inquiryDetail/inquiryDetail.component';
 import { HtKeyBoardNumComponent } from './number_keyboard/keyboard-num.component';
+import { FormsModule } from '@angular/forms';
 
 /**
  * Page components
@@ -48,6 +49,7 @@ const pages = [
     ...pages
   ],
   imports: [
+    FormsModule,
     BrowserModule,
     OnsenModule,
   ],

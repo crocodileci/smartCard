@@ -24,7 +24,7 @@ export class Tab1Component implements OnInit {
    */
   card_info: CardInfo = {
     issuer: {
-      id: "006",
+      value: "006",
       label: "006 合庫商銀"
     },
     mainAccount: "1234567890"
@@ -193,7 +193,7 @@ export class Tab1Component implements OnInit {
       //   issuer: "",
       //   mainAccount: ""
       // };
-      this.card_info.issuer.id = cardInfo.issuer;
+      this.card_info.issuer.value = cardInfo.issuer;
       this.card_info.mainAccount = cardInfo.mainAccount;
     })
   }

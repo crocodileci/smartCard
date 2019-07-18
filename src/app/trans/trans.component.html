@@ -14,8 +14,8 @@
     <ons-list-item>
       <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉入銀行代號:</label>
       <div>
-        <ons-select [(ngModel)]="transBankID">
-          <option *ngFor="let bank of bankList" [value]="bank.value">
+        <ons-select [(ngModel)]="transBankValue">
+          <option *ngFor="let bank of bankList" [value]="bank.value" [selected]="bank.selected==true">
             {{ bank.label }}
           </option>
         </ons-select>

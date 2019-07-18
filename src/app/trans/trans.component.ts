@@ -1,11 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OnsNavigator, Params } from 'ngx-onsenui';
 import { TransConfirmComponent } from '@app/transConfirm/transConfirm.component';
-
-interface Option {
-  value: "string";
-  label: "string";
-}
+import { CardInfo, BankInfo } from '@app/model/CardInfo';
 
 interface TransData{
   issuerBankID: string;
@@ -23,15 +19,12 @@ interface TransData{
 })
 
 export class TransComponent implements OnInit {
-  card_info= {
-    id:"1234567890",
-    bankID:741
-  }
+  card_info:CardInfo;
 
   /**
    * 轉入銀行別
    */
-  transBankID = "006";
+  transBankValue;
 
   /**
    * 轉入帳號
@@ -42,6 +35,11 @@ export class TransComponent implements OnInit {
    * 轉出金額
    */
   amount = "";
+
+  /**
+   * 轉出銀行
+   */
+  transBank:BankInfo;
 
   /**
    * 卡片密碼
@@ -58,7 +56,6 @@ export class TransComponent implements OnInit {
     tac: "",
   };
 
-  selectedModifier: string = '006 合庫商銀';
   bankList = this.getBankList();
 
   /**
@@ -66,6 +63,7 @@ export class TransComponent implements OnInit {
    */
   constructor(private navi: OnsNavigator, private _param: Params) {
     this.card_info = _param.data;
+    console.log(this.card_info)
   }
 
   /**
@@ -73,6 +71,10 @@ export class TransComponent implements OnInit {
    */
   ngOnInit() {
     this.card_pwd = "";
+    this.bankList = this.getBankList();
+
+    this.transBankValue = this.setDefaultSelected(this.bankList, this.card_info.issuer.value).value;
+    console.log(this.bankList);
   }
 
   /**
@@ -80,13 +82,22 @@ export class TransComponent implements OnInit {
    */
   pushTransConfirm(){
     this.transData.issuerBankID = "006";
-    this.transData.accountId = this.card_info.id;
-    this.transData.transBankID = this.transBankID;
+    this.transData.accountId = this.card_info.issuer.value;
+    this.transData.transBankID = this.transBankValue;
     this.transData.transAccount = this.trans_account;
     this.transData.amount = this.amount;
     this.transData.tac = "456";
 
-    this.navi.nativeElement.pushPage(TransConfirmComponent, {data:this.transData});
+    console.log(this.transBankValue);
+
+    var transBank = this.getTransBank(this.bankList, this.transBankValue);
+    console.log(transBank);
+    this.transBank = transBank;
+    console.log(this.transBank.value);
+    console.log(this.transBank.label);
+
+
+    // this.navi.nativeElement.pushPage(TransConfirmComponent, {data:this.transData});
   }
 
   /**
@@ -96,11 +107,22 @@ export class TransComponent implements OnInit {
     this.navi.nativeElement.popPage();
   }
 
-  getBankList(): Array<Option>{
+  setDefaultSelected(optionArray: Array<HTMLOptionElement>, value:String){
+    var item = optionArray.filter((item, index, array) => { return item.value == value })[0];
+    item.selected = true;
+    return item;
+  }
+
+  getTransBank(bankList: Array<HTMLOptionElement>, value:string){
+    var item = bankList.filter((item, index, array) => { return item.value == value })[0];
+    return item;
+  }
+
+  getBankList(): Array<HTMLOptionElement>{
     var lists = new Array();
     lists[0] = new Option('004 臺灣銀行', '004');
     lists[1] = new Option('005 土地銀行', '005');
-    lists[2] = new Option('006 合庫商銀', '006', true, true);
+    lists[2] = new Option('006 合庫商銀', '006');
     lists[3] = new Option('007 第一銀行', '007');
     lists[4] = new Option('008 華南銀行', '008');
     lists[5] = new Option('009 彰化銀行', '009');

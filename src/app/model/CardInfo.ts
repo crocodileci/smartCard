@@ -1,9 +1,9 @@
 export interface CardInfo{
-    issuer: CardIssuerInfo,
+    issuer: BankInfo,
     mainAccount: string
 }
 
-export interface CardIssuerInfo{
-    id: string,
+export interface BankInfo{
+    value: string,
     label: string
 }
