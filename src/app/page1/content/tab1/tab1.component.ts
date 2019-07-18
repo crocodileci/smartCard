@@ -6,7 +6,8 @@ import { InquiryComponent } from '@app/inquiry/inquiry.component';
 import { TransComponent } from '@app/trans/trans.component';
 import { detectChanges } from '@angular/core/src/render3';
 import * as ons from 'onsenui';
-import { fromEvent } from 'rxjs';
+import { fromEvent, Subscription } from 'rxjs';
+import { TouchSequence } from 'selenium-webdriver';
 
 declare var hitrust:any;
 
@@ -29,6 +30,15 @@ export class Tab1Component implements OnInit {
     issuer: "",
     mainAccount: ""
   };
+
+  /**
+   * 讀卡機事件處理
+   */
+  readerattached_event: Subscription;
+  readerdetached_event: Subscription;
+  carddetached_event: Subscription;
+  cardattached_event: Subscription;
+  
 
   /**
    * 讀卡機是否存在
@@ -104,6 +114,9 @@ export class Tab1Component implements OnInit {
    * 變更密碼頁面
    */
   pushChangePwd() {
+    if (ons.isWebView()) {
+      this.unregisterEvent();
+    }
     this.navi.nativeElement.pushPage(ChangePwdComponent, {
       data: this.card_info
     });
@@ -113,6 +126,9 @@ export class Tab1Component implements OnInit {
    * 跳轉至查詢餘額頁面
    */
   pushInquiry(){
+    if (ons.isWebView()) {
+      this.unregisterEvent();
+    }
     this.navi.nativeElement.pushPage(InquiryComponent, {
       data: this.card_info
     });
@@ -122,34 +138,37 @@ export class Tab1Component implements OnInit {
    * 跳轉至轉帳作業頁面
    */
   pushTrans(){
+    if (ons.isWebView()) {
+      this.unregisterEvent();
+    }
     this.navi.nativeElement.pushPage(TransComponent, {
       data: this.card_info
     });
   }
 
   registerEvent(){
-    fromEvent(window, 'readerdetached').subscribe(()=>{
+    this.readerdetached_event = fromEvent(window, 'readerdetached').subscribe(()=>{
       console.log("readerdetached");
       this.zone.run(() => {
         this.isReaderExisted = false;
       });
     });
 
-    fromEvent(window, 'readerattached').subscribe(()=>{
+    this.readerattached_event = fromEvent(window, 'readerattached').subscribe(()=>{
       console.log("readerattached");
       this.zone.run(() => {
         this.isReaderExisted = true;
       });
     });
 
-    fromEvent(window, 'carddetached').subscribe(()=>{
+    this.carddetached_event = fromEvent(window, 'carddetached').subscribe(()=>{
       console.log("carddetached");
       this.zone.run(() => {
         this.isCardExisted = false;
       });
     });
 
-    fromEvent(window, 'cardattached').subscribe(()=>{
+    this.cardattached_event = fromEvent(window, 'cardattached').subscribe(()=>{
       console.log("cardattached");
       this.zone.run(() => {
         this.isCardExisted = true;
@@ -158,8 +177,16 @@ export class Tab1Component implements OnInit {
     });
   }
 
+  unregisterEvent(){
+    this.readerattached_event.unsubscribe();
+    this.readerdetached_event.unsubscribe();
+    this.carddetached_event.unsubscribe();
+    this.cardattached_event.unsubscribe();
+  }
+
   readAccount(){
     hitrust.plugins.cardReader.getCardInfo((cardInfo: CardInfo)=>{
+      console.log("readAccount");
       console.log("cardInfo: " + cardInfo);
       this.card_info = cardInfo;
     })
