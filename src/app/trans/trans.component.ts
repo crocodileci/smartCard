@@ -1,16 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OnsNavigator, Params } from 'ngx-onsenui';
 import { TransConfirmComponent } from '@app/transConfirm/transConfirm.component';
-import { CardInfo, BankInfo } from '@app/model/CardInfo';
-
-interface TransData{
-  issuerBankID: string;
-  accountId: string;
-  transBankID: string;
-  transAccount: string;
-  amount: string;
-  tac:string;
-}
+import { CardInfo, BankInfo, TransData } from '@app/model/CardInfo';
 
 @Component({
   selector: 'ons-page[trans]',
@@ -48,9 +39,7 @@ export class TransComponent implements OnInit {
 
   //往下傳的資料
   transData: TransData = {
-    accountId: "",
-    issuerBankID: "123",
-    transBankID: "456",
+    issuerAccount: "",
     transAccount: "",
     amount: "",
     tac: "",
@@ -74,30 +63,32 @@ export class TransComponent implements OnInit {
     this.bankList = this.getBankList();
 
     this.transBankValue = this.setDefaultSelected(this.bankList, this.card_info.issuer.value).value;
-    console.log(this.bankList);
+    this.transData.issuerBank = this.getBank(this.bankList, this.card_info.issuer.value);
+    this.transData.issuerAccount = this.card_info.mainAccount;
+    
+    console.log(this.transData.issuerBank.value);
+    console.log(this.transData.issuerBank.label);
   }
 
   /**
    * 帶出轉帳確認頁
    */
   pushTransConfirm(){
-    this.transData.issuerBankID = "006";
-    this.transData.accountId = this.card_info.issuer.value;
-    this.transData.transBankID = this.transBankValue;
-    this.transData.transAccount = this.trans_account;
-    this.transData.amount = this.amount;
-    this.transData.tac = "456";
 
     console.log(this.transBankValue);
 
-    var transBank = this.getTransBank(this.bankList, this.transBankValue);
+    var transBank = this.getBank(this.bankList, this.transBankValue);
     console.log(transBank);
-    this.transBank = transBank;
-    console.log(this.transBank.value);
-    console.log(this.transBank.label);
+    this.transData.transBank = transBank;
+    this.transData.transAccount = this.trans_account;
+    this.transData.amount = this.amount;
 
 
-    // this.navi.nativeElement.pushPage(TransConfirmComponent, {data:this.transData});
+    this.transData.tac = "123";
+    console.log(this.transData);
+
+
+    this.navi.nativeElement.pushPage(TransConfirmComponent, {data:this.transData});
   }
 
   /**
@@ -113,7 +104,7 @@ export class TransComponent implements OnInit {
     return item;
   }
 
-  getTransBank(bankList: Array<HTMLOptionElement>, value:string){
+  getBank(bankList: Array<HTMLOptionElement>, value:string){
     var item = bankList.filter((item, index, array) => { return item.value == value })[0];
     return item;
   }
