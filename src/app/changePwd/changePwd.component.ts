@@ -1,13 +1,18 @@
 import {
   Component,
-  OnInit
+  OnInit,
+  NgZone
 } from '@angular/core';
 import {
-  OnsNavigator, Params
+  OnsNavigator,
+  Params
 } from 'ngx-onsenui';
 import {
   ChangePwdDetailComponent
 } from '@app/changePwdDetail/changePwdDetail.component';
+import * as ons from 'onsenui';
+
+declare var hitrust: any;
 
 @Component({
   selector: 'ons-page[changePwd]',
@@ -30,7 +35,7 @@ export class ChangePwdComponent implements OnInit {
   /**
    * Constructor
    */
-  constructor(private navi: OnsNavigator, private _param: Params) {
+  constructor(private navi: OnsNavigator, private _param: Params, private zone: NgZone) {
     this.card_info = _param.data;
   }
 
@@ -47,9 +52,45 @@ export class ChangePwdComponent implements OnInit {
   }
 
   pushChangeDetail() {
-    this.navi.nativeElement.pushPage(ChangePwdDetailComponent, {
-      data: {
-        isSuccess: true //變更結果
+
+    var alertOptions = {
+      title: "",
+      message: ""
+    }
+
+    if (this.old_pwd == this.new_pwd1) {
+
+      alertOptions.message = '新舊密碼不得相同\n請重新輸入';
+      ons.notification.alert(alertOptions);
+
+    } else if (this.new_pwd1 != this.new_pwd2) {
+
+      alertOptions.message = '兩次新密碼輸入不一致\n請確認後重新輸入';
+      ons.notification.alert(alertOptions);
+
+    } else {
+
+      if (ons.isWebView()) {
+        hitrust.plugins.cardReader.isCardExisted((isExisted) => {
+          console.log(isExisted ? "Card existed" : "Card not existed");
+          hitrust.plugins.cardReader.modifyPin(this.old_pwd, this.new_pwd1, (result: Boolean) => {
+            this.navi.nativeElement.pushPage(ChangePwdDetailComponent, {
+              data: {
+                isSuccess: result //變更結果
+              }
+            });
+          }, (error) => {
+
+          });
+        }, function (error) {
+          console.log(error);
+        })
+      } else {
+        this.navi.nativeElement.pushPage(ChangePwdDetailComponent, {
+          data: {
+            isSuccess: true //變更結果
+          }
+        });
       }
     });
   }
