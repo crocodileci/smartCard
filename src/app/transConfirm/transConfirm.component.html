@@ -8,21 +8,24 @@
   <ons-list>
     <!-- <ons-list-header>Bindings</ons-list-header> -->
     <ons-list-item>
-      <label style="height: 31px; line-height: 31px; margin-right: 5%; width: 30%; text-align: right;">主帳號:</label>
-      <label>{{this.account.id}}</label>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%; min-width: 40%;">轉出銀行代號:</label>
+      <label>{{this.transData.issuerBank.label}}</label>
     </ons-list-item>
     <ons-list-item>
-      <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉入銀行代號:</label>
-      <label>{{this.transData.issuerBankID}}</label>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%; min-width: 40%;">轉出帳號:</label>
+      <label>{{this.transData.issuerAccount}}</label>
     </ons-list-item>
     <ons-list-item>
-      <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉入帳號:</label>
-      <ons-input type="password" placeholder="密碼" [(value)]="trans_account" style="text-align:center"></ons-input>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%; min-width: 40%;">轉入銀行代號:</label>
+      <label>{{this.transData.transBank.label}}</label>
     </ons-list-item>
     <ons-list-item>
-      <label style="height: 31px; line-height: 31px; margin-right: 5%;">卡片密碼:</label>
-      <ons-input type="password" placeholder="密碼" [(value)]="card_pwd" style="text-align:center">
-      </ons-input>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%; min-width: 40%;">轉入帳號:</label>
+      <label>{{this.transData.transAccount}}</label>
+    </ons-list-item>
+    <ons-list-item>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%; min-width: 40%;">轉帳金額:</label>
+      <label>{{this.transData.amount}}</label>
     </ons-list-item>
   </ons-list>
   <div style="margin-top: 20px;">

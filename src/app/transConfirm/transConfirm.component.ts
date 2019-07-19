@@ -1,15 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { OnsNavigator, Params } from 'ngx-onsenui';
 import { transConfirmDetailComponent } from '@app/transConfirmDetail/transConfirmDetail.component';
-
-interface TransData {
-  issuerBankID: string;
-  accountId: string;
-  transBankID: string;
-  transAccount: string;
-  amount: string;
-  tac: string;
-}
+import { TransData } from '@app/model/CardInfo';
 
 @Component({
   selector: 'ons-page[transConfirm]',
