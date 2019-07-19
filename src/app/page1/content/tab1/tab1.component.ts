@@ -24,7 +24,7 @@ export class Tab1Component implements OnInit {
    */
   card_info: CardInfo = {
     issuer: {
-      value: "006",
+      value: "00600000",
       label: "006 合庫商銀"
     },
     mainAccount: "1234567890"
@@ -85,6 +85,7 @@ export class Tab1Component implements OnInit {
         }, function(error){console.log(error)});
       });
     }else{
+      this.card_info.issuer.value = this.card_info.issuer.value.substring(0, 3);
       this.checkReader();
       this.checkCard();
     }
@@ -193,7 +194,7 @@ export class Tab1Component implements OnInit {
       //   issuer: "",
       //   mainAccount: ""
       // };
-      this.card_info.issuer.value = cardInfo.issuer;
+      this.card_info.issuer.value = cardInfo.issuer.substring(0, 3);
       this.card_info.mainAccount = cardInfo.mainAccount;
     })
   }
