@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { OnsNavigator, Params } from 'ngx-onsenui';
 import { TransConfirmComponent } from '@app/transConfirm/transConfirm.component';
 import { CardInfo, BankInfo, TransData } from '@app/model/CardInfo';
+import * as ons from 'onsenui';
+import { Subscription, fromEvent } from 'rxjs';
+
+var modal;
 
 @Component({
   selector: 'ons-page[trans]',
@@ -33,6 +37,12 @@ export class TransComponent implements OnInit {
   transBank:BankInfo;
 
   /**
+   * 遮罩頁物件
+   */
+  pullOutModal;
+  insertInModal;
+
+  /**
    * 卡片密碼
   */
   card_pwd="";
@@ -46,6 +56,14 @@ export class TransComponent implements OnInit {
   };
 
   bankList = this.getBankList();
+
+  /**
+   * 讀卡機事件處理
+   */
+  readerattached_event: Subscription;
+  readerdetached_event: Subscription;
+  carddetached_event: Subscription;
+  cardattached_event: Subscription;
 
   /**
    * Constructor
@@ -65,6 +83,11 @@ export class TransComponent implements OnInit {
     this.transBankValue = this.setDefaultSelected(this.bankList, this.card_info.issuer.value).value;
     this.transData.issuerBank = this.getBank(this.bankList, this.card_info.issuer.value);
     this.transData.issuerAccount = this.card_info.mainAccount;
+    this.card_info.issuer.label = this.transData.issuerBank.label;
+
+    //初始化遮罩頁
+    this.pullOutModal = document.querySelector('ons-modal#showPullOut');
+    this.insertInModal = document.querySelector('ons-modal#showInsertIn');
     
     console.log(this.transData.issuerBank.value);
     console.log(this.transData.issuerBank.label);
@@ -77,6 +100,25 @@ export class TransComponent implements OnInit {
 
     console.log(this.transBankValue);
 
+    if(ons.isWebView()){
+      this.pullOutModal.show();
+      this.registerEvent();
+    }else{
+      this.pullOutModal.show();
+      setTimeout(() => {
+        this.pullOutModal.hide();
+
+        this.insertInModal.show();
+        setTimeout(() => {
+          this.insertInModal.hide();
+          this.gotoNextPage();
+        }, 2000);
+
+      }, 2000);
+    }
+  }
+
+  gotoNextPage(){
     var transBank = this.getBank(this.bankList, this.transBankValue);
     console.log(transBank);
     this.transData.transBank = transBank;
@@ -88,14 +130,16 @@ export class TransComponent implements OnInit {
     console.log(this.transData);
 
 
-    this.navi.nativeElement.pushPage(TransConfirmComponent, {data:this.transData});
+    this.navi.nativeElement.pushPage(TransConfirmComponent, { data: this.transData });
   }
 
   /**
    * Pop page
    */
   popPage() {
-    this.navi.nativeElement.popPage();
+    this.navi.nativeElement.resetToPage(this.navi.nativeElement.page, {
+      pop: "slide"
+    });
   }
 
   setDefaultSelected(optionArray: Array<HTMLOptionElement>, value:String){
@@ -107,6 +151,37 @@ export class TransComponent implements OnInit {
   getBank(bankList: Array<HTMLOptionElement>, value:string){
     var item = bankList.filter((item, index, array) => { return item.value == value })[0];
     return item;
+  }
+
+  registerEvent() {
+    this.readerdetached_event = fromEvent(window, 'readerdetached').subscribe(() => {
+      console.log("readerdetached");
+
+    });
+
+    this.readerattached_event = fromEvent(window, 'readerattached').subscribe(() => {
+      console.log("readerattached");
+    });
+
+    this.carddetached_event = fromEvent(window, 'carddetached').subscribe(() => {
+      console.log("carddetached");
+      this.pullOutModal.hide();
+      this.insertInModal.show();
+    });
+
+    this.cardattached_event = fromEvent(window, 'cardattached').subscribe(() => {
+      console.log("cardattached");
+      this.insertInModal.hide();
+      this.unregisterEvent();
+      this.gotoNextPage();
+    });
+  }
+
+  unregisterEvent() {
+    this.readerattached_event.unsubscribe();
+    this.readerdetached_event.unsubscribe();
+    this.carddetached_event.unsubscribe();
+    this.cardattached_event.unsubscribe();
   }
 
   getBankList(): Array<HTMLOptionElement>{

@@ -1,6 +1,6 @@
 <ons-toolbar>
   <div class="left">
-    <ons-back-button></ons-back-button>
+    <ons-back-button (click)="popPage()"></ons-back-button>
   </div>
   <div class="center">轉帳作業</div>
 </ons-toolbar>
@@ -11,14 +11,14 @@
       <label>{{card_info.issuer.label}}</label>
     </ons-list-item>
     <ons-list-item>
-      <label style="height: 31px; line-height: 31px; margin-right: 5%; width: 30%; text-align: right;">主帳號:</label>
-      <label>{{this.card_info.mainAccount}}</label>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%; width: 30%; text-align: right;">轉出帳號:</label>
+      <label>{{card_info.mainAccount}}</label>
     </ons-list-item>
     <ons-list-item>
       <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉入銀行代號:</label>
       <div>
         <ons-select [(ngModel)]="transBankValue">
-          <option *ngFor="let bank of bankList" [value]="bank.value" [selected]="bank.selected==true">
+          <option *ngFor="let bank of bankList" [value]="bank.value">
             {{ bank.label }}
           </option>
         </ons-select>
@@ -44,3 +44,10 @@
     <ons-button (click)="popPage()">取消交易</ons-button>
   </div>
 </div>
+
+<ons-modal id="showPullOut">
+  <p>請拔出卡片</p>
+</ons-modal>
+<ons-modal id="showInsertIn">
+  <p>請插入卡片</p>
+</ons-modal>
