@@ -33,8 +33,6 @@ export class TransConfirmComponent implements OnInit {
   //卡片密碼
   card_pwd="";
 
-  selectedModifier: string = '006 合庫商銀';
-
   /**
    * Constructor
    */
