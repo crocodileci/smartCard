@@ -6,7 +6,10 @@
 </ons-toolbar>
 <div style="text-align: center; margin: 10px">
   <ons-list>
-    <!-- <ons-list-header>Bindings</ons-list-header> -->
+    <ons-list-item>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉出銀行代號:</label>
+      <label>{{card_info.issuer.label}}</label>
+    </ons-list-item>
     <ons-list-item>
       <label style="height: 31px; line-height: 31px; margin-right: 5%; width: 30%; text-align: right;">主帳號:</label>
       <label>{{this.card_info.mainAccount}}</label>
@@ -26,7 +29,7 @@
       <ons-input placeholder="請輸入帳號" [(value)]="trans_account" style="text-align:center"></ons-input>
     </ons-list-item>
     <ons-list-item>
-      <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉出金額:</label>
+      <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉帳金額:</label>
       <ons-input placeholder="請輸入金額" [(value)]="amount" style="text-align:center">
       </ons-input>
     </ons-list-item>
