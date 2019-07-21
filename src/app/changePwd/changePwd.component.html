@@ -10,21 +10,24 @@
     <ons-list-item>
       <label style="height: 31px; line-height: 31px; margin-right: 5%;">輸入舊密碼:</label>
       <div (click)="showNumKeyboard('old_pwd')" id="input_for_keyboard">
-      <ons-input type="password" placeholder="密碼" [(value)]="old_pwd" style="text-align:center">
+      <ons-input type="password" placeholder="請輸入卡片密碼" [(value)]="old_pwd" style="text-align:center"
+        readonly>
       </ons-input>
         </div>
     </ons-list-item>
     <ons-list-item>
       <label style="height: 31px; line-height: 31px; margin-right: 5%;">輸入新密碼:</label>
       <div (click)="showNumKeyboard('new_pwd1')" id="input_for_keyboard">
-      <ons-input type="password" placeholder="密碼" [(value)]="new_pwd1" style="text-align:center">
+      <ons-input type="password" placeholder="請輸入6~12位之數字" [(value)]="new_pwd1" style="text-align:center"
+        readonly>
       </ons-input>
         </div>
     </ons-list-item>
     <ons-list-item>
       <label style="height: 31px; line-height: 31px; margin-right: 5%;">再次新密碼:</label>
       <div (click)="showNumKeyboard('new_pwd2')" id="input_for_keyboard">
-      <ons-input type="password" placeholder="密碼" [(value)]="new_pwd2" style="text-align:center">
+      <ons-input type="password" placeholder="請輸入6~12位之數字" [(value)]="new_pwd2" style="text-align:center"
+        readonly>
       </ons-input>
       </div>
     </ons-list-item>
