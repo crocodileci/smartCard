@@ -26,17 +26,19 @@
     </ons-list-item>
     <ons-list-item>
       <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉入帳號:</label>
-      <ons-input placeholder="請輸入帳號" [(value)]="trans_account" style="text-align:center"></ons-input>
+      <ons-input type="tel" placeholder="請輸入帳號" [(value)]="trans_account" style="text-align:center"></ons-input>
     </ons-list-item>
     <ons-list-item>
       <label style="height: 31px; line-height: 31px; margin-right: 5%;">轉帳金額:</label>
-      <ons-input placeholder="請輸入金額" [(value)]="amount" style="text-align:center">
+      <ons-input type="tel" placeholder="請輸入金額" [(value)]="amount" style="text-align:center">
       </ons-input>
     </ons-list-item>
     <ons-list-item>
       <label style="height: 31px; line-height: 31px; margin-right: 5%;">卡片密碼:</label>
-      <ons-input type="password" placeholder="請輸入密碼" [(value)]="card_pwd" style="text-align:center">
+      <div (click)="showNumKeyboard()" id="input_for_keyboard">
+      <ons-input type="password" placeholder="請輸入密碼" [(value)]="card_pwd" style="text-align:center" readonly>
       </ons-input>
+      </div>
     </ons-list-item>
   </ons-list>
   <div style="margin-top: 20px;">
@@ -51,3 +53,5 @@
 <ons-modal id="showInsertIn">
   <p>請插入卡片</p>
 </ons-modal>
+<ht-keyboard-num [nowValue]="card_pwd" [isOpen]="isShowKeyboard" (resultValue)="getkeyboardNumVal($event)"
+  (onCloseKeyboard)="onClosekeyboardNum($event)"></ht-keyboard-num>

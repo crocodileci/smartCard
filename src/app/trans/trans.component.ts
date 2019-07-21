@@ -3,6 +3,7 @@ import { OnsNavigator, Params } from 'ngx-onsenui';
 import { TransConfirmComponent } from '@app/transConfirm/transConfirm.component';
 import { CardInfo, BankInfo, TransData } from '@app/model/CardInfo';
 import * as ons from 'onsenui';
+import * as moment from 'moment';
 import { Subscription, fromEvent } from 'rxjs';
 
 var modal;
@@ -41,6 +42,11 @@ export class TransComponent implements OnInit {
    */
   pullOutModal;
   insertInModal;
+
+  /**
+   * 控制動態鍵盤相關
+   */
+  isShowKeyboard;
 
   /**
    * 卡片密碼
@@ -93,6 +99,22 @@ export class TransComponent implements OnInit {
     console.log(this.transData.issuerBank.label);
   }
 
+  showNumKeyboard() {
+    console.log("show keyboard");
+    this.isShowKeyboard = true;
+    this.card_pwd = "";
+  }
+
+  onClosekeyboardNum(e) {
+    if (e) {
+      this.isShowKeyboard = false;
+    }
+  }
+
+  getkeyboardNumVal(e) {
+    this.card_pwd = e;
+  }
+
   /**
    * 帶出轉帳確認頁
    */
@@ -128,9 +150,22 @@ export class TransComponent implements OnInit {
 
     this.transData.tac = "123";
     console.log(this.transData);
+    this.generateFakePayload(this.transData);
 
 
     this.navi.nativeElement.pushPage(TransConfirmComponent, { data: this.transData });
+  }
+
+  generateFakePayload(transData: TransData){
+    console.log("generateFakePayload");
+    transData.transDate = moment().format("YYYY/MM/DD");
+    transData.transTime = moment().format("HH:mm:ss");
+    transData.transType = "轉帳交易";
+    transData.transSerial = "0000123";
+    transData.balance = "12317698";
+    transData.returnCode = "0";
+    transData.transResult = "交易成功";
+    console.log(transData);
   }
 
   /**
