@@ -54,6 +54,7 @@ export class TransConfirmComponent implements OnInit {
   }
 
   pushTransDetail(){
+    this.response = this.transData;
     this.navi.nativeElement.pushPage(transConfirmDetailComponent, {data:this.response});
   }
 }
