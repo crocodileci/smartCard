@@ -22,6 +22,7 @@ export interface TransData {
   returnCode ? : string;
   transResult ? : string;
   tac ? : string;
+  serial ? : string;
 }
 
 declare namespace hitrust {

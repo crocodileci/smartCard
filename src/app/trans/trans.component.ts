@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { Subscription, fromEvent } from 'rxjs';
 
 var modal;
+declare var hitrust: any;
 
 @Component({
   selector: 'ons-page[trans]',
@@ -147,13 +148,36 @@ export class TransComponent implements OnInit {
     this.transData.transAccount = this.trans_account;
     this.transData.amount = this.amount;
 
+    hitrust.plugins.cardReader.verifyPin(this.card_pwd, (result:boolean)=>{
+      var alertOptions = {
+        title: "",
+        message: ""
+      }
 
-    this.transData.tac = "123";
-    console.log(this.transData);
-    this.generateFakePayload(this.transData);
+      if (result) {
+
+        let text = this.card_info.issuer.value;
+
+        hitrust.plugins.cardReader.getTAC(text, (result) => {
+
+          console.log(result);
+
+          this.transData.serial = result.serial;
+          this.transData.tac = result.tac;
+          console.log(this.transData);
+          this.generateFakePayload(this.transData);
 
 
-    this.navi.nativeElement.pushPage(TransConfirmComponent, { data: this.transData });
+          this.navi.nativeElement.pushPage(TransConfirmComponent, { data: this.transData });
+
+        }, console.error);
+
+      } else {
+        alertOptions.message = '密碼驗證錯誤請重新輸入';
+        ons.notification.alert(alertOptions);
+      }
+
+    }, console.error);
   }
 
   generateFakePayload(transData: TransData){
