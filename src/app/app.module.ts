@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { OnsenModule } from 'ngx-onsenui';
 
@@ -19,6 +20,9 @@ import { transConfirmDetailComponent } from './transConfirmDetail/transConfirmDe
 import { InquiryDetailComponent } from './inquiryDetail/inquiryDetail.component';
 import { HtKeyBoardNumComponent } from './number_keyboard/keyboard-num.component';
 import { FormsModule } from '@angular/forms';
+import { HandshakeInterceptorService } from './services/interceptors/handshake-interceptor.service';
+import { ProfilerInterceptorService } from './services/interceptors/profiler-interceptor.service';
+
 
 /**
  * Page components
@@ -51,9 +55,19 @@ const pages = [
   imports: [
     FormsModule,
     BrowserModule,
-    OnsenModule,
+    HttpClientModule,
+    OnsenModule
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: HandshakeInterceptorService,
+    multi: true,
+  }, 
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: ProfilerInterceptorService,
+    multi: true,
+  }],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
