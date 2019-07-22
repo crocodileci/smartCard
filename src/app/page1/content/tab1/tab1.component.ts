@@ -73,10 +73,12 @@ export class Tab1Component implements OnInit {
 
           hitrust.plugins.cardReader.isCardExisted((isExisted) => {
             console.log(isExisted ? "Card existed" : "Card not existed");
-            this.zone.run(() => {
-              this.readAccount();
-              this.isCardExisted = isExisted;
-            });
+            if (isExisted) {
+              this.zone.run(() => {
+                this.readAccount();
+                this.isCardExisted = isExisted;
+              });
+            }
           }, function(error){
             console.log(error);
           })
@@ -194,8 +196,10 @@ export class Tab1Component implements OnInit {
       //   issuer: "",
       //   mainAccount: ""
       // };
-      this.card_info.issuer.value = cardInfo.issuer.substring(0, 3);
-      this.card_info.mainAccount = cardInfo.mainAccount;
+      this.zone.run(() => {
+        this.card_info.issuer.value = cardInfo.issuer.substring(0, 3);
+        this.card_info.mainAccount = cardInfo.mainAccount;
+      });
     })
   }
 
