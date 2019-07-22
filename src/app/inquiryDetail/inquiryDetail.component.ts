@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { OnsNavigator } from 'ngx-onsenui';
+import { OnsNavigator, Params } from 'ngx-onsenui';
+import { TransData } from '@app/model/CardInfo';
 
 @Component({
   selector: 'ons-page[inquiryDetail]',
@@ -9,15 +10,19 @@ import { OnsNavigator } from 'ngx-onsenui';
 export class InquiryDetailComponent implements OnInit {
   response;
 
+  transData: TransData = null;
+
   /**
    * Constructor
    */
-  constructor(private navi: OnsNavigator) { }
+  constructor(private navi: OnsNavigator, private _params: Params) { }
 
   /**
    * Initialize
    */
   ngOnInit() {
+    this.transData = this._params.data;
+    console.log(this.transData);
   }
 
   /**
