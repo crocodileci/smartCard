@@ -62,7 +62,7 @@ export class TransComponent implements OnInit {
     tac: "",
   };
 
-  bankList = this.getBankList();
+  bankList;
 
   /**
    * 讀卡機事件處理
