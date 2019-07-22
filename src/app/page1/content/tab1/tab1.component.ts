@@ -9,6 +9,7 @@ import * as ons from 'onsenui';
 import { fromEvent, Subscription } from 'rxjs';
 import { TouchSequence } from 'selenium-webdriver';
 import { CardInfo } from '@app/model/CardInfo';
+import { HttpClient } from '@angular/common/http';
 
 declare var hitrust:any;
 
@@ -52,7 +53,7 @@ export class Tab1Component implements OnInit {
   /**
    * Constructor
    */
-  constructor(private navi: OnsNavigator, private zone: NgZone) { }
+  constructor(private navi: OnsNavigator, private zone: NgZone, private http: HttpClient) { }
 
 
   /**
@@ -84,6 +85,9 @@ export class Tab1Component implements OnInit {
           })
 
           this.registerEvent();
+
+          //測試handshake
+          this.testHandshake();
         }, function(error){console.log(error)});
       });
     }else{
@@ -201,6 +205,93 @@ export class Tab1Component implements OnInit {
         this.card_info.mainAccount = cardInfo.mainAccount;
       });
     })
+  }
+
+  testHandshake(){
+    console.log("testHandshake");
+    let url = "http://notice.hitrust.com.tw/rest/eATM/";
+    let service_challenge = "response/calculate";
+    let service_response = "response/verify";
+    let service_communicate = "communicate";
+    let clientSessionId = "";
+
+    hitrust.plugins.e2ee.generateChallenge((challenge) => {
+      this.http.post(url + service_challenge, challenge, { observe: 'response', responseType: 'text'}).subscribe(res => {
+        console.log(res);
+        let body = JSON.parse(res.body);
+        console.log(body);
+
+        clientSessionId = body.clientSessionId;
+
+        let serverResponse = {
+          serverChallenge: body.serverChallenge,
+          publicKey: body.serverPublicKey,
+          serverResponse: body.serverResponse
+        }
+
+        hitrust.plugins.e2ee.verifyResponse(serverResponse, (clientResponse) => {
+          
+          console.log(clientResponse);
+
+          clientResponse.clientSessionId = clientSessionId;
+
+          this.http.post(url + service_response, clientResponse, { observe: 'response', responseType: 'text' }).subscribe(res => {
+            console.log(res);
+            let body = JSON.parse(res.body);
+            console.log(body);
+
+            hitrust.plugins.e2ee.sessionKeyDecrypt(body.answer, (result)=>{
+              console.log(result);
+
+              if (result == "Challenge Response & synchonize session key complete."){
+                console.log("Handshake done");
+
+                let telegram_101 = {
+                  userId: "Grady",
+                  caseId: "123",
+                  actionId: "456",
+                  company: "Histrust",
+                  name: "GradyDun"
+                }
+                
+                hitrust.plugins.e2ee.sessionKeyEncrypt(JSON.stringify(telegram_101), (cipherText)=>{
+                  console.log(cipherText);
+
+                  let telegram = {
+                    clientSessionId: clientSessionId,
+                    communication: cipherText
+                  }
+
+                  this.http.post(url + service_communicate, telegram, { observe: 'response', responseType: 'text' }).subscribe(res => {
+
+                    console.log(res);
+
+                    let body = JSON.parse(res.body);
+
+                    hitrust.plugins.e2ee.sessionKeyDecrypt(body.communication, (plainText)=>{
+                      console.log(plainText);
+
+                      let body = JSON.parse(plainText);
+
+                      console.log(body);
+
+                    }, console.error);
+
+                  });
+
+                }, console.error);
+
+
+              }
+
+            }, console.error);
+          });
+
+        },console.error);
+
+      });
+    }, console.error);
+
   }
 
 
