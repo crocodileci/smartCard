@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { OnsNavigator, Params } from 'ngx-onsenui';
 import { transConfirmDetailComponent } from '@app/transConfirmDetail/transConfirmDetail.component';
 import { TransData } from '@app/model/CardInfo';
+import { HttpClient } from '@angular/common/http';
+import { HandShakeServiceService } from '@app/services/handshake/hand-shake-service.service';
 
 @Component({
   selector: 'ons-page[transConfirm]',
@@ -36,7 +38,7 @@ export class TransConfirmComponent implements OnInit {
   /**
    * Constructor
    */
-  constructor(private navi: OnsNavigator, private _params: Params) { }
+  constructor(private navi: OnsNavigator, private _params: Params, private http:HttpClient, private handshakeService:HandShakeServiceService) { }
 
   /**
    * Initialize
@@ -54,7 +56,12 @@ export class TransConfirmComponent implements OnInit {
   }
 
   pushTransDetail(){
-    this.response = this.transData;
-    this.navi.nativeElement.pushPage(transConfirmDetailComponent, {data:this.response});
+    console.log("pushTransDetail");
+    let service = this.handshakeService.serverURL + this.handshakeService.communicateServiceName;
+    this.http.post<any>(service, this.transData).subscribe(res =>{
+      console.log(res);
+      this.response = this.transData;
+      this.navi.nativeElement.pushPage(transConfirmDetailComponent, { data: this.response });
+    });
   }
 }
