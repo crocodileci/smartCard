@@ -62,9 +62,24 @@ export class ChangePwdComponent implements OnInit {
       message: ""
     }
 
-    if (this.old_pwd == this.new_pwd1) {
+    if (this.old_pwd == "" || this.new_pwd1 == "" || this.new_pwd2 == ""){
+
+      alertOptions.message = "輸入欄位不得為空";
+      ons.notification.alert(alertOptions);
+
+    } else if (this.old_pwd == this.new_pwd1) {
 
       alertOptions.message = '新舊密碼不得相同\n請重新輸入';
+      ons.notification.alert(alertOptions);
+
+    } else if (this.old_pwd.length < 6 || this.old_pwd.length > 12 ) {
+
+      alertOptions.message = '卡片密碼長度有誤，請重新輸入';
+      ons.notification.alert(alertOptions);
+
+    }else if (this.new_pwd1.length < 6 || this.new_pwd1.length > 12 || this.new_pwd2.length < 6 || this.new_pwd2.length > 12) {
+
+      alertOptions.message = '新密碼長度有誤，請重新輸入';
       ons.notification.alert(alertOptions);
 
     } else if (this.new_pwd1 != this.new_pwd2) {
