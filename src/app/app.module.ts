@@ -22,6 +22,9 @@ import { HtKeyBoardNumComponent } from './number_keyboard/keyboard-num.component
 import { FormsModule } from '@angular/forms';
 import { HttpEncryptInterceptorService } from './services/interceptors/handshake-interceptor.service';
 import { ProfilerInterceptorService } from './services/interceptors/profiler-interceptor.service';
+import { HttpHandShakeInterceptorService } from './services/interceptors/http-hand-shake-interceptor.service';
+import { HttpDecryptInterceptorService } from './services/interceptors/http-decrypt-interceptor.service';
+import { HttpErrorInterceptorService } from './services/interceptors/http-error-interceptor.service';
 
 
 /**
@@ -58,9 +61,25 @@ const pages = [
     HttpClientModule,
     OnsenModule
   ],
-  providers: [{
+  providers: [
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: HttpErrorInterceptorService,
+    multi: true,
+  },
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: HttpHandShakeInterceptorService,
+    multi: true,
+  },
+  {
     provide: HTTP_INTERCEPTORS,
     useClass: HttpEncryptInterceptorService,
+    multi: true,
+  },
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: HttpDecryptInterceptorService,
     multi: true,
   }, 
   {

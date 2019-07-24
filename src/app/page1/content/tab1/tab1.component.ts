@@ -88,7 +88,8 @@ export class Tab1Component implements OnInit {
           this.registerEvent();
 
           //測試handshake
-          this.handshakeService.testHandshake();
+          // this.handshakeService.testHandshake();
+          this.handshakeService.testNormalTelegram();
         }, function(error){console.log(error)});
       });
     }else{

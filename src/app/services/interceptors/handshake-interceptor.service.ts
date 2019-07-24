@@ -15,17 +15,14 @@ export class HttpEncryptInterceptorService implements HttpInterceptor{
   constructor(private handshakeService:HandShakeServiceService) { }
 
   public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
+    console.log("HttpEncryptInterceptorService");
     if (req.url.indexOf(this.handshakeService.communicateServiceName) > 0){
-      console.log("Interceptor encrypt body");
+      console.log("encrypt body");
       //加密通道處理
-
       //取得clientSessionId
       let clientSessionId = this.handshakeService.currentClientSessionId;
       if (clientSessionId){
-
         console.log(req);
-
         //取出原始body
         let body = req.body;
         
@@ -47,29 +44,14 @@ export class HttpEncryptInterceptorService implements HttpInterceptor{
               },
             });
 
-            return next.handle(encryptReq).pipe(
-              map((event: HttpEvent<any>) => {
-                if (event instanceof HttpResponse) {
-                  console.log("interceptor response");
-                  console.log(event);
-
-                  if (event.body.returnCode == 5){
-                    console.log("invalid session id");
-
-                    
-                  }else{
-                    return event;
-                  }
-                }
-              })
-            );
+            return next.handle(encryptReq);
           })
         );
       }else{
         //需要handshake後 再重送
-      }
 
-      
+        return next.handle(req);
+      }
 
     }else{
       //非加密通道的處理=> bypass
@@ -86,9 +68,5 @@ export class HttpEncryptInterceptorService implements HttpInterceptor{
         resolve(cipherText);
       }, reject);
     }));
-  }
-
-  handshake(){
-
   }
 }
