@@ -9,6 +9,9 @@ export interface BankInfo {
 }
 
 export interface TransData {
+  userId: string,
+  caseId: string,
+  actionId: string,
   transDate ? : string;
   transTime ? : string;
   transType ? : string;

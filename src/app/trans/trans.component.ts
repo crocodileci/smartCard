@@ -56,6 +56,9 @@ export class TransComponent implements OnInit {
 
   //往下傳的資料
   transData: TransData = {
+    userId: "Grady",
+    caseId: "123",
+    actionId: "456",
     issuerAccount: "",
     transAccount: "",
     amount: "",

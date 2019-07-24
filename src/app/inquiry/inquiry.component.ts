@@ -10,6 +10,8 @@ import * as ons from 'onsenui';
 import { CardInfo, TransData } from '@app/model/CardInfo';
 import * as moment from 'moment';
 import { Subscription, fromEvent } from 'rxjs';
+import { HandShakeServiceService } from '@app/services/handshake/hand-shake-service.service';
+import { HttpClient } from '@angular/common/http';
 
 declare var hitrust: any;
 
@@ -37,6 +39,9 @@ export class InquiryComponent implements OnInit {
    * 交易資料
    */
   transData: TransData = {
+    userId: "Grady",
+    caseId: "123",
+    actionId: "456",
     issuerAccount: "",
     transAccount: "",
     amount: "",
@@ -65,7 +70,7 @@ export class InquiryComponent implements OnInit {
   /**
    * Constructor
    */
-  constructor(private navi: OnsNavigator, private _param: Params) {
+  constructor(private navi: OnsNavigator, private _param: Params, private handshakeService: HandShakeServiceService, private http:HttpClient) {
     this.card_info = _param.data;
   }
 
@@ -156,9 +161,15 @@ export class InquiryComponent implements OnInit {
             console.log(this.transData);
             this.generateFakePayload(this.transData);
 
-            this.navi.nativeElement.pushPage(InquiryDetailComponent, {
-              data: this.transData //變更結果
+            let service = this.handshakeService.serverURL + this.handshakeService.communicateServiceName;
+            this.http.post<any>(service, this.transData).subscribe(res => {
+              console.log(res);
+              let response = this.transData;
+              this.navi.nativeElement.pushPage(InquiryDetailComponent, {
+                data: response //變更結果
+              });
             });
+
 
           }, console.error);
 
@@ -173,8 +184,13 @@ export class InquiryComponent implements OnInit {
       console.log(this.transData);
       this.generateFakePayload(this.transData);
 
-      this.navi.nativeElement.pushPage(InquiryDetailComponent, {
-        data: this.transData //變更結果
+      let service = this.handshakeService.serverURL + this.handshakeService.communicateServiceName;
+      this.http.post<any>(service, this.transData).subscribe(res => {
+        console.log(res);
+        let response = this.transData;
+        this.navi.nativeElement.pushPage(InquiryDetailComponent, {
+          data: response //變更結果
+        });
       });
     }
   }
