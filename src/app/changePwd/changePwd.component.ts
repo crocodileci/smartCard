@@ -108,8 +108,21 @@ export class ChangePwdComponent implements OnInit {
 
     } else {
 
-      this.pullOutModal.show();
-      this.registerEvent();
+      if (ons.isWebView()) {
+        this.pullOutModal.show();
+        this.registerEvent();
+      } else {
+        this.pullOutModal.show();
+        setTimeout(() => {
+          this.pullOutModal.hide();
+          this.insertInModal.show();
+          setTimeout(() => {
+            this.insertInModal.hide();
+            this.goToChangePwdDetailPage();
+          }, 2000);
+
+        }, 2000);
+      }
 
     }
   }
