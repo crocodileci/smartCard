@@ -94,6 +94,8 @@ export class InquiryComponent implements OnInit {
   }
 
   inquiryProcess() {
+    
+    this.isShowKeyboard = false;
 
     var alertOptions = {
       title: "",
@@ -137,32 +139,44 @@ export class InquiryComponent implements OnInit {
       message: ""
     }
 
+    if (ons.isWebView()) {
+
     hitrust.plugins.cardReader.verifyPin(this.card_pwd, (result: boolean) => {
 
       if (result) {
 
-        let text = this.card_info.issuer.value;
+          let text = this.card_info.issuer.value;
 
-        hitrust.plugins.cardReader.getTAC(text, (result) => {
+          hitrust.plugins.cardReader.getTAC(text, (result) => {
 
-          console.log(result);
+            console.log(result);
 
-          this.transData.serial = result.serial;
-          this.transData.tac = result.tac;
-          console.log(this.transData);
-          this.generateFakePayload(this.transData);
+            this.transData.serial = result.serial;
+            this.transData.tac = result.tac;
+            console.log(this.transData);
+            this.generateFakePayload(this.transData);
 
-          this.navi.nativeElement.pushPage(InquiryDetailComponent, {
-            data: this.transData //變更結果
-          });
+            this.navi.nativeElement.pushPage(InquiryDetailComponent, {
+              data: this.transData //變更結果
+            });
 
-        }, console.error);
+          }, console.error);
 
-      } else {
-        alertOptions.message = '密碼驗證錯誤請重新輸入';
-        ons.notification.alert(alertOptions);
-      }
-    }, console.error);
+        } else {
+          alertOptions.message = '密碼驗證錯誤請重新輸入';
+          ons.notification.alert(alertOptions);
+        }
+      }, console.error);
+    }else{
+      this.transData.serial = "123456789";
+      this.transData.tac = "987654321";
+      console.log(this.transData);
+      this.generateFakePayload(this.transData);
+
+      this.navi.nativeElement.pushPage(InquiryDetailComponent, {
+        data: this.transData //變更結果
+      });
+    }
   }
 
   registerEvent() {
