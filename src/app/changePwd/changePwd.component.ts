@@ -76,6 +76,9 @@ export class ChangePwdComponent implements OnInit {
 
   pushChangeDetail() {
 
+    //收起動態鍵盤
+    this.isShowKeyboard = false;
+
     var alertOptions = {
       title: "",
       message: ""
