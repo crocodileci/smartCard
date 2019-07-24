@@ -11,6 +11,7 @@ import {
   ChangePwdDetailComponent
 } from '@app/changePwdDetail/changePwdDetail.component';
 import * as ons from 'onsenui';
+import { Subscription, fromEvent } from 'rxjs';
 
 declare var hitrust: any;
 
@@ -35,6 +36,20 @@ export class ChangePwdComponent implements OnInit {
   new_pwd2 = "";
 
   /**
+   * 讀卡機事件處理
+   */
+  readerattached_event: Subscription;
+  readerdetached_event: Subscription;
+  carddetached_event: Subscription;
+  cardattached_event: Subscription;
+
+  /**
+   * 遮罩頁物件
+   */
+  pullOutModal;
+  insertInModal;
+
+  /**
    * Constructor
    */
   constructor(private navi: OnsNavigator, private _param: Params, private zone: NgZone) {
@@ -44,7 +59,11 @@ export class ChangePwdComponent implements OnInit {
   /**
    * Initialize
    */
-  ngOnInit() {}
+  ngOnInit() {
+    //初始化遮罩頁
+    this.pullOutModal = document.querySelector('ons-modal#showPullOut');
+    this.insertInModal = document.querySelector('ons-modal#showInsertIn');
+  }
 
   /**
    * Pop page
@@ -89,30 +108,66 @@ export class ChangePwdComponent implements OnInit {
 
     } else {
 
-      if (ons.isWebView()) {
-        hitrust.plugins.cardReader.isCardExisted((isExisted) => {
-          console.log(isExisted ? "Card existed" : "Card not existed");
-          hitrust.plugins.cardReader.modifyPin(this.old_pwd, this.new_pwd1, (result: Boolean) => {
-            this.navi.nativeElement.pushPage(ChangePwdDetailComponent, {
-              data: {
-                isSuccess: result //變更結果
-              }
-            });
-          }, (error) => {
-
-          });
-        }, function (error) {
-          console.log(error);
-        })
-      } else {
-        this.navi.nativeElement.pushPage(ChangePwdDetailComponent, {
-          data: {
-            isSuccess: true //變更結果
-          }
-        });
-      }
+      this.pullOutModal.show();
+      this.registerEvent();
 
     }
+  }
+
+  goToChangePwdDetailPage(){
+    if (ons.isWebView()) {
+      hitrust.plugins.cardReader.isCardExisted((isExisted) => {
+        console.log(isExisted ? "Card existed" : "Card not existed");
+        hitrust.plugins.cardReader.modifyPin(this.old_pwd, this.new_pwd1, (result: Boolean) => {
+          this.navi.nativeElement.pushPage(ChangePwdDetailComponent, {
+            data: {
+              isSuccess: result //變更結果
+            }
+          });
+        }, (error) => {
+
+        });
+      }, function (error) {
+        console.log(error);
+      })
+    } else {
+      this.navi.nativeElement.pushPage(ChangePwdDetailComponent, {
+        data: {
+          isSuccess: true //變更結果
+        }
+      });
+    }
+  }
+
+  registerEvent() {
+    this.readerdetached_event = fromEvent(window, 'readerdetached').subscribe(() => {
+      console.log("readerdetached");
+
+    });
+
+    this.readerattached_event = fromEvent(window, 'readerattached').subscribe(() => {
+      console.log("readerattached");
+    });
+
+    this.carddetached_event = fromEvent(window, 'carddetached').subscribe(() => {
+      console.log("carddetached");
+      this.pullOutModal.hide();
+      this.insertInModal.show();
+    });
+
+    this.cardattached_event = fromEvent(window, 'cardattached').subscribe(() => {
+      console.log("cardattached");
+      this.insertInModal.hide();
+      this.unregisterEvent();
+      this.goToChangePwdDetailPage();
+    });
+  }
+
+  unregisterEvent() {
+    this.readerattached_event.unsubscribe();
+    this.readerdetached_event.unsubscribe();
+    this.carddetached_event.unsubscribe();
+    this.cardattached_event.unsubscribe();
   }
 
   showNumKeyboard(e) {
