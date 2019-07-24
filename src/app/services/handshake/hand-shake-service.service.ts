@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { from } from 'rxjs';
+import * as ons from 'onsenui';
 
 declare var hitrust: any;
 
@@ -14,6 +15,7 @@ export class HandShakeServiceService {
   private service_challenge = "response/calculate";
   private service_response = "response/verify";
   private service_communicate = "communicate";
+  private fakeUrl = "http://fake/"
 
 
   constructor(private http: HttpClient) { }
@@ -36,12 +38,20 @@ export class HandShakeServiceService {
     return this.service_communicate;
   }
 
+  public get fakeURL():string{
+    return this.fakeUrl;
+  }
+
   public get responseServiceName(): string{
     return this.service_response;
   }
 
   public get serverURL(): string {
-    return this.url;
+    if(ons.isWebView()){
+      return this.url;
+    }else{
+      return this.fakeUrl
+    }
   }
 
   public get currentClientSessionId(): string {

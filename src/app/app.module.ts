@@ -25,6 +25,7 @@ import { ProfilerInterceptorService } from './services/interceptors/profiler-int
 import { HttpHandShakeInterceptorService } from './services/interceptors/http-hand-shake-interceptor.service';
 import { HttpDecryptInterceptorService } from './services/interceptors/http-decrypt-interceptor.service';
 import { HttpErrorInterceptorService } from './services/interceptors/http-error-interceptor.service';
+import { FakeInterceptorService } from './services/interceptors/fake-interceptor.service';
 
 
 /**
@@ -62,6 +63,11 @@ const pages = [
     OnsenModule
   ],
   providers: [
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: FakeInterceptorService,
+    multi: true,
+  },
   {
     provide: HTTP_INTERCEPTORS,
     useClass: HttpErrorInterceptorService,
