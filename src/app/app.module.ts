@@ -20,7 +20,7 @@ import { transConfirmDetailComponent } from './transConfirmDetail/transConfirmDe
 import { InquiryDetailComponent } from './inquiryDetail/inquiryDetail.component';
 import { HtKeyBoardNumComponent } from './number_keyboard/keyboard-num.component';
 import { FormsModule } from '@angular/forms';
-import { HandshakeInterceptorService } from './services/interceptors/handshake-interceptor.service';
+import { HttpEncryptInterceptorService } from './services/interceptors/handshake-interceptor.service';
 import { ProfilerInterceptorService } from './services/interceptors/profiler-interceptor.service';
 
 
@@ -60,7 +60,7 @@ const pages = [
   ],
   providers: [{
     provide: HTTP_INTERCEPTORS,
-    useClass: HandshakeInterceptorService,
+    useClass: HttpEncryptInterceptorService,
     multi: true,
   }, 
   {

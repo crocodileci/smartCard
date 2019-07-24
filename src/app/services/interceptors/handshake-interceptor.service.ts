@@ -10,7 +10,7 @@ declare var hitrust:any;
 @Injectable({
   providedIn: 'root'
 })
-export class HandshakeInterceptorService implements HttpInterceptor{
+export class HttpEncryptInterceptorService implements HttpInterceptor{
 
   constructor(private handshakeService:HandShakeServiceService) { }
 

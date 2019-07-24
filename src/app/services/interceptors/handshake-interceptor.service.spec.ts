@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { HandshakeInterceptorService } from './handshake-interceptor.service';
+import { HttpEncryptInterceptorService } from './handshake-interceptor.service';
 
 describe('HandshakeInterceptorService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: HandshakeInterceptorService = TestBed.get(HandshakeInterceptorService);
+    const service: HttpEncryptInterceptorService = TestBed.get(HttpEncryptInterceptorService);
     expect(service).toBeTruthy();
   });
 });
