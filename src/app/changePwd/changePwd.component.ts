@@ -50,7 +50,9 @@ export class ChangePwdComponent implements OnInit {
    * Pop page
    */
   popPage() {
-    this.navi.nativeElement.popPage();
+    this.navi.nativeElement.resetToPage(this.navi.nativeElement.page, {
+      pop: "slide"
+    });
   }
 
   pushChangeDetail() {
