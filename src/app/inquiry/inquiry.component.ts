@@ -9,6 +9,7 @@ import { InquiryDetailComponent } from '@app/inquiryDetail/inquiryDetail.compone
 import * as ons from 'onsenui';
 import { CardInfo, TransData } from '@app/model/CardInfo';
 import * as moment from 'moment';
+import { Subscription, fromEvent } from 'rxjs';
 
 declare var hitrust: any;
 
@@ -48,6 +49,20 @@ export class InquiryComponent implements OnInit {
   bankList;
 
   /**
+   * 遮罩頁物件
+   */
+  pullOutModal;
+  insertInModal;
+
+  /**
+   * 讀卡機事件處理
+   */
+  readerattached_event: Subscription;
+  readerdetached_event: Subscription;
+  carddetached_event: Subscription;
+  cardattached_event: Subscription;
+
+  /**
    * Constructor
    */
   constructor(private navi: OnsNavigator, private _param: Params) {
@@ -63,6 +78,10 @@ export class InquiryComponent implements OnInit {
     this.transData.issuerBank = this.getBank(this.bankList, this.card_info.issuer.value);
     this.transData.issuerAccount = this.card_info.mainAccount;
     this.card_info.issuer.label = this.transData.issuerBank.label;
+
+    //初始化遮罩頁
+    this.pullOutModal = document.querySelector('ons-modal#showPullOut');
+    this.insertInModal = document.querySelector('ons-modal#showInsertIn');
   }
 
   /**
@@ -76,6 +95,41 @@ export class InquiryComponent implements OnInit {
 
   inquiryProcess() {
 
+    var alertOptions = {
+      title: "",
+      message: ""
+    }
+
+    if(this.card_pwd == ""){
+
+      alertOptions.message = '請輸入卡片密碼';
+      ons.notification.alert(alertOptions);
+
+    } else if (this.card_pwd.length < 6 || this.card_pwd.length > 12) {
+
+      alertOptions.message = '卡片密碼長度有誤，請重新輸入';
+      ons.notification.alert(alertOptions);
+
+    } else {
+      if (ons.isWebView()) {
+        this.pullOutModal.show();
+        this.registerEvent();
+      } else {
+        this.pullOutModal.show();
+        setTimeout(() => {
+          this.pullOutModal.hide();
+          this.insertInModal.show();
+          setTimeout(() => {
+            this.insertInModal.hide();
+            this.gotoInquiryDetailPage();
+          }, 2000);
+
+        }, 2000);
+      }
+    }
+  }
+
+  gotoInquiryDetailPage(){
     console.log("inquiryProcess");
 
     var alertOptions = {
@@ -83,13 +137,13 @@ export class InquiryComponent implements OnInit {
       message: ""
     }
 
-    hitrust.plugins.cardReader.verifyPin(this.card_pwd, (result:boolean)=>{
+    hitrust.plugins.cardReader.verifyPin(this.card_pwd, (result: boolean) => {
 
-      if (result){
+      if (result) {
 
         let text = this.card_info.issuer.value;
 
-        hitrust.plugins.cardReader.getTAC(text, (result)=>{
+        hitrust.plugins.cardReader.getTAC(text, (result) => {
 
           console.log(result);
 
@@ -98,17 +152,48 @@ export class InquiryComponent implements OnInit {
           console.log(this.transData);
           this.generateFakePayload(this.transData);
 
-          this.navi.nativeElement.pushPage(InquiryDetailComponent, { 
+          this.navi.nativeElement.pushPage(InquiryDetailComponent, {
             data: this.transData //變更結果
           });
 
         }, console.error);
 
-      }else{
+      } else {
         alertOptions.message = '密碼驗證錯誤請重新輸入';
         ons.notification.alert(alertOptions);
       }
     }, console.error);
+  }
+
+  registerEvent() {
+    this.readerdetached_event = fromEvent(window, 'readerdetached').subscribe(() => {
+      console.log("readerdetached");
+
+    });
+
+    this.readerattached_event = fromEvent(window, 'readerattached').subscribe(() => {
+      console.log("readerattached");
+    });
+
+    this.carddetached_event = fromEvent(window, 'carddetached').subscribe(() => {
+      console.log("carddetached");
+      this.pullOutModal.hide();
+      this.insertInModal.show();
+    });
+
+    this.cardattached_event = fromEvent(window, 'cardattached').subscribe(() => {
+      console.log("cardattached");
+      this.insertInModal.hide();
+      this.unregisterEvent();
+      this.gotoInquiryDetailPage();
+    });
+  }
+
+  unregisterEvent() {
+    this.readerattached_event.unsubscribe();
+    this.readerdetached_event.unsubscribe();
+    this.carddetached_event.unsubscribe();
+    this.cardattached_event.unsubscribe();
   }
 
   generateFakePayload(transData: TransData) {
