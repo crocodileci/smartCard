@@ -148,36 +148,47 @@ export class TransComponent implements OnInit {
     this.transData.transAccount = this.trans_account;
     this.transData.amount = this.amount;
 
-    hitrust.plugins.cardReader.verifyPin(this.card_pwd, (result:boolean)=>{
-      var alertOptions = {
-        title: "",
-        message: ""
-      }
+    if (ons.isWebView()) {
 
-      if (result) {
+      hitrust.plugins.cardReader.verifyPin(this.card_pwd, (result:boolean)=>{
+        var alertOptions = {
+          title: "",
+          message: ""
+        }
 
-        let text = this.card_info.issuer.value;
+        if (result) {
 
-        hitrust.plugins.cardReader.getTAC(text, (result) => {
+          let text = this.card_info.issuer.value;
 
-          console.log(result);
+          hitrust.plugins.cardReader.getTAC(text, (result) => {
 
-          this.transData.serial = result.serial;
-          this.transData.tac = result.tac;
-          console.log(this.transData);
-          this.generateFakePayload(this.transData);
+            console.log(result);
+
+            this.transData.serial = result.serial;
+            this.transData.tac = result.tac;
+            console.log(this.transData);
+            this.generateFakePayload(this.transData);
 
 
-          this.navi.nativeElement.pushPage(TransConfirmComponent, { data: this.transData });
+            this.navi.nativeElement.pushPage(TransConfirmComponent, { data: this.transData });
 
-        }, console.error);
+          }, console.error);
 
-      } else {
-        alertOptions.message = '密碼驗證錯誤請重新輸入';
-        ons.notification.alert(alertOptions);
-      }
+        } else {
+          alertOptions.message = '密碼驗證錯誤請重新輸入';
+          ons.notification.alert(alertOptions);
+        }
 
-    }, console.error);
+      }, console.error);
+    }else{
+      this.transData.serial = "123456789";
+      this.transData.tac = "987654321";
+      console.log(this.transData);
+      this.generateFakePayload(this.transData);
+
+
+      this.navi.nativeElement.pushPage(TransConfirmComponent, { data: this.transData });
+    }
   }
 
   generateFakePayload(transData: TransData){
