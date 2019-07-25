@@ -126,21 +126,43 @@ export class TransComponent implements OnInit {
 
     console.log(this.transBankValue);
 
-    if(ons.isWebView()){
-      this.pullOutModal.show();
-      this.registerEvent();
-    }else{
-      this.pullOutModal.show();
-      setTimeout(() => {
-        this.pullOutModal.hide();
+    var alertOptions = {
+      title: "",
+      message: ""
+    }
 
-        this.insertInModal.show();
+    if (this.trans_account == "" || this.amount == "" || this.card_pwd == "") {
+
+      alertOptions.message = "輸入欄位不得為空";
+      ons.notification.alert(alertOptions);
+
+    } else if (this.trans_account.length < 8 || this.trans_account.length > 14) {
+
+      alertOptions.message = '轉出帳號長度有誤\n請重新輸入';
+      ons.notification.alert(alertOptions);
+
+    } else if (this.card_pwd.length < 6 || this.card_pwd.length > 12) {
+
+      alertOptions.message = '卡片密碼長度有誤，請重新輸入';
+      ons.notification.alert(alertOptions);
+    } else {
+
+      if(ons.isWebView()){
+        this.pullOutModal.show();
+        this.registerEvent();
+      }else{
+        this.pullOutModal.show();
         setTimeout(() => {
-          this.insertInModal.hide();
-          this.gotoNextPage();
-        }, 2000);
+          this.pullOutModal.hide();
 
-      }, 2000);
+          this.insertInModal.show();
+          setTimeout(() => {
+            this.insertInModal.hide();
+            this.gotoNextPage();
+          }, 2000);
+
+        }, 2000);
+      }
     }
   }
 
