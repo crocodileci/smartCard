@@ -7,7 +7,7 @@ import {
 } from 'ngx-onsenui';
 import { InquiryDetailComponent } from '@app/inquiryDetail/inquiryDetail.component';
 import * as ons from 'onsenui';
-import { CardInfo, TransData } from '@app/model/CardInfo';
+import { CardInfo, TransData, InquiryTelegramData, InquiryTelegramResponseData } from '@app/model/CardInfo';
 import * as moment from 'moment';
 import { Subscription, fromEvent } from 'rxjs';
 import { HandShakeServiceService } from '@app/services/handshake/hand-shake-service.service';
@@ -36,9 +36,22 @@ export class InquiryComponent implements OnInit {
   card_pwd = "";
 
   /**
-   * 交易資料
+  * 查詢餘額電文資料
+  */
+  inquiryTelegramData: InquiryTelegramData = {
+    tx_code: "6000",
+    issuer_account: "",
+    issuer_id: "",
+    issuer_remark: "",
+    atm_checkcode: "",
+    icc_no: "",
+    tsac: ""
+  };
+
+  /**
+   * 交易結果資料
    */
-  transData: TransData = {
+  responseData: TransData = {
     userId: "Grady",
     caseId: "123",
     actionId: "456",
@@ -47,6 +60,8 @@ export class InquiryComponent implements OnInit {
     amount: "",
     tac: "",
   };
+
+  
 
   /**
    * 銀行資料 
@@ -80,9 +95,9 @@ export class InquiryComponent implements OnInit {
   ngOnInit() { 
     this.bankList = this.getBankList();
 
-    this.transData.issuerBank = this.getBank(this.bankList, this.card_info.issuer.value);
-    this.transData.issuerAccount = this.card_info.mainAccount;
-    this.card_info.issuer.label = this.transData.issuerBank.label;
+    this.responseData.issuerBank = this.getBank(this.bankList, this.card_info.issuer.value);
+    this.responseData.issuerAccount = this.card_info.mainAccount;
+    this.card_info.issuer.label = this.responseData.issuerBank.label;
 
     //初始化遮罩頁
     this.pullOutModal = document.querySelector('ons-modal#showPullOut');
@@ -138,6 +153,12 @@ export class InquiryComponent implements OnInit {
 
   gotoInquiryDetailPage(){
     console.log("inquiryProcess");
+    
+    //組合請求餘額查詢電文
+    this.inquiryTelegramData.issuer_id = (this.card_info.issuer.value + "00000000000000").substring(0, 8);
+    this.inquiryTelegramData.issuer_account = this.card_info.mainAccount;
+    this.inquiryTelegramData.issuer_remark = "Unknown";
+    this.inquiryTelegramData.atm_checkcode = "";
 
     var alertOptions = {
       title: "",
@@ -150,21 +171,32 @@ export class InquiryComponent implements OnInit {
 
       if (result) {
 
-          let text = this.card_info.issuer.value;
+        let text = this.inquiryTelegramData.tx_code + 
+                   this.inquiryTelegramData.atm_checkcode +
+                   this.inquiryTelegramData.issuer_account;
 
           hitrust.plugins.cardReader.getTAC(text, (result) => {
 
             console.log(result);
 
-            this.transData.serial = result.serial;
-            this.transData.tac = result.tac;
-            console.log(this.transData);
-            this.generateFakePayload(this.transData);
+            this.responseData.serial = result.serial;
+            this.responseData.tac = result.tac;
+            console.log(this.responseData);
+            this.generateFakePayload(this.responseData);
 
             let service = this.handshakeService.serverURL + this.handshakeService.communicateServiceName;
-            this.http.post<any>(service, this.transData).subscribe(res => {
+
+            //組合請求餘額查詢電文
+            this.inquiryTelegramData.icc_no = result.serial;
+            this.inquiryTelegramData.tsac = result.tac;
+
+            console.log(`inquiryTelegramData: ${this.inquiryTelegramData}`);
+
+            this.http.post<InquiryTelegramResponseData>(service, this.inquiryTelegramData).subscribe(res => {
               console.log(res);
-              let response = this.transData;
+              let response = this.responseData;
+              response.balance = res.amount;
+              response.returnCode = res.errorCode.toString();
               this.navi.nativeElement.pushPage(InquiryDetailComponent, {
                 data: response //變更結果
               });
@@ -179,15 +211,15 @@ export class InquiryComponent implements OnInit {
         }
       }, console.error);
     }else{
-      this.transData.serial = "123456789";
-      this.transData.tac = "987654321";
-      console.log(this.transData);
-      this.generateFakePayload(this.transData);
+      this.responseData.serial = "123456789";
+      this.responseData.tac = "987654321";
+      console.log(this.responseData);
+      this.generateFakePayload(this.responseData);
 
       let service = this.handshakeService.serverURL + this.handshakeService.communicateServiceName;
-      this.http.post<any>(service, this.transData).subscribe(res => {
+      this.http.post<any>(service, this.responseData).subscribe(res => {
         console.log(res);
-        let response = this.transData;
+        let response = this.responseData;
         this.navi.nativeElement.pushPage(InquiryDetailComponent, {
           data: response //變更結果
         });
