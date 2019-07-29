@@ -34,9 +34,13 @@ export class HttpDecryptInterceptorService implements HttpInterceptor {
 
               if (body.returnCode == 0){
                 this.bodyDecrypt(body.communication).subscribe(plainText =>{
-                  var body = JSON.parse(<string>plainText);
+                  var decrypted_body = {
+                    returnCode: body.returnCode,
+                    communication: JSON.parse(<string>plainText),
+                    returnMessage: body.returnMessage
+                  }
 
-                  event = (<HttpResponse<any>>event).clone({ body: body });
+                  event = (<HttpResponse<any>>event).clone({ body: decrypted_body });
                   ob.next(event);
                 })
               }else{

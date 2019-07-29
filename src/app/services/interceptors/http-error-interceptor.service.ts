@@ -28,7 +28,7 @@ export class HttpErrorInterceptorService implements HttpInterceptor {
               var body = event.body;
               console.log("body: ", body);
 
-              if (body.returnCode && body.returnCode != 0) {
+              if (body.returnCode != 0) {
                 console.log("communicate error");
                   this.handshakeService.handshake().subscribe(isHandShakeSuccess => {
                     next.handle(req).subscribe((response)=>{
@@ -36,6 +36,10 @@ export class HttpErrorInterceptorService implements HttpInterceptor {
                     })
                   })
               }else{
+
+                let body = (<HttpResponse<any>>event).body.communication;
+
+                event = (<HttpResponse<any>>event).clone({ body: body });
                 ob.next(event);
               }
             } else {
