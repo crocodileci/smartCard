@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host=0.0.0.0 --open",
+    "start": "ng build --watch",
+    "serve": "cd www && browser-sync --watch",
     "build": "ng build --prod",
     "test": "ng test --code-coverage",
     "lint": "ng lint",
