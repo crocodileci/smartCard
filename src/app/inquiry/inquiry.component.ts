@@ -3,15 +3,30 @@ import {
   OnInit
 } from '@angular/core';
 import {
-  OnsNavigator, Params
+  OnsNavigator,
+  Params
 } from 'ngx-onsenui';
-import { InquiryDetailComponent } from '@app/inquiryDetail/inquiryDetail.component';
+import {
+  InquiryDetailComponent
+} from '@app/inquiryDetail/inquiryDetail.component';
 import * as ons from 'onsenui';
-import { CardInfo, TransData, InquiryTelegramData, InquiryTelegramResponseData } from '@app/model/CardInfo';
+import {
+  CardInfo,
+  TransData,
+  InquiryTelegramData,
+  InquiryTelegramResponseData
+} from '@app/model/CardInfo';
 import * as moment from 'moment';
-import { Subscription, fromEvent } from 'rxjs';
-import { HandShakeServiceService } from '@app/services/handshake/hand-shake-service.service';
-import { HttpClient } from '@angular/common/http';
+import {
+  Subscription,
+  fromEvent
+} from 'rxjs';
+import {
+  HandShakeServiceService
+} from '@app/services/handshake/hand-shake-service.service';
+import {
+  HttpClient
+} from '@angular/common/http';
 
 declare var hitrust: any;
 
@@ -28,7 +43,7 @@ export class InquiryComponent implements OnInit {
   /**
    * 卡片資訊
    */
-  card_info:CardInfo;
+  card_info: CardInfo;
 
   /**
    * 卡片密碼
@@ -36,10 +51,10 @@ export class InquiryComponent implements OnInit {
   card_pwd = "";
 
   /**
-  * 查詢餘額電文資料
-  */
+   * 查詢餘額電文資料
+   */
   inquiryTelegramData: InquiryTelegramData = {
-    tx_code: "6000",
+    tx_code: "2500",
     issuer_account: "",
     issuer_id: "",
     issuer_remark: "",
@@ -61,7 +76,7 @@ export class InquiryComponent implements OnInit {
     tac: "",
   };
 
-  
+
 
   /**
    * 銀行資料 
@@ -85,14 +100,14 @@ export class InquiryComponent implements OnInit {
   /**
    * Constructor
    */
-  constructor(private navi: OnsNavigator, private _param: Params, private handshakeService: HandShakeServiceService, private http:HttpClient) {
+  constructor(private navi: OnsNavigator, private _param: Params, private handshakeService: HandShakeServiceService, private http: HttpClient) {
     this.card_info = _param.data;
   }
 
   /**
    * Initialize
    */
-  ngOnInit() { 
+  ngOnInit() {
     this.bankList = this.getBankList();
 
     this.responseData.issuerBank = this.getBank(this.bankList, this.card_info.issuer.value);
@@ -114,7 +129,7 @@ export class InquiryComponent implements OnInit {
   }
 
   inquiryProcess() {
-    
+
     this.isShowKeyboard = false;
 
     var alertOptions = {
@@ -122,7 +137,7 @@ export class InquiryComponent implements OnInit {
       message: ""
     }
 
-    if(this.card_pwd == ""){
+    if (this.card_pwd == "") {
 
       alertOptions.message = '請輸入卡片密碼';
       ons.notification.alert(alertOptions);
@@ -151,9 +166,9 @@ export class InquiryComponent implements OnInit {
     }
   }
 
-  gotoInquiryDetailPage(){
+  gotoInquiryDetailPage() {
     console.log("inquiryProcess");
-    
+
     //組合請求餘額查詢電文
     this.inquiryTelegramData.issuer_id = (this.card_info.issuer.value + "00000000000000").substring(0, 8);
     this.inquiryTelegramData.issuer_account = this.card_info.mainAccount;
@@ -167,13 +182,13 @@ export class InquiryComponent implements OnInit {
 
     if (ons.isWebView()) {
 
-    hitrust.plugins.cardReader.verifyPin(this.card_pwd, (result: boolean) => {
+      hitrust.plugins.cardReader.verifyPin(this.card_pwd, (result: boolean) => {
 
-      if (result) {
+        if (result) {
 
-        let text = this.inquiryTelegramData.tx_code + 
-                   this.inquiryTelegramData.atm_checkcode +
-                   this.inquiryTelegramData.issuer_account;
+          let text = this.inquiryTelegramData.tx_code +
+            this.inquiryTelegramData.atm_checkcode +
+            this.inquiryTelegramData.issuer_account;
 
           hitrust.plugins.cardReader.getTAC(text, (result) => {
 
@@ -192,7 +207,7 @@ export class InquiryComponent implements OnInit {
 
             console.log(`inquiryTelegramData: ${this.inquiryTelegramData}`);
 
-            this.http.post<InquiryTelegramResponseData>(service, this.inquiryTelegramData).subscribe(res => {
+            this.http.post < InquiryTelegramResponseData > (service, this.inquiryTelegramData).subscribe(res => {
               console.log(res);
               let response = this.responseData;
               response.balance = res.amount;
@@ -210,14 +225,14 @@ export class InquiryComponent implements OnInit {
           ons.notification.alert(alertOptions);
         }
       }, console.error);
-    }else{
+    } else {
       this.responseData.serial = "123456789";
       this.responseData.tac = "987654321";
       console.log(this.responseData);
       this.generateFakePayload(this.responseData);
 
       let service = this.handshakeService.serverURL + this.handshakeService.communicateServiceName;
-      this.http.post<any>(service, this.responseData).subscribe(res => {
+      this.http.post < any > (service, this.responseData).subscribe(res => {
         console.log(res);
         let response = this.responseData;
         this.navi.nativeElement.pushPage(InquiryDetailComponent, {
@@ -291,12 +306,14 @@ export class InquiryComponent implements OnInit {
     this.card_pwd = e;
   }
 
-  getBank(bankList: Array<HTMLOptionElement>, value: string) {
-    var item = bankList.filter((item, index, array) => { return item.value == value })[0];
+  getBank(bankList: Array < HTMLOptionElement > , value: string) {
+    var item = bankList.filter((item, index, array) => {
+      return item.value == value
+    })[0];
     return item;
   }
 
-  getBankList(): Array<HTMLOptionElement> {
+  getBankList(): Array < HTMLOptionElement > {
     var lists = new Array();
     lists[0] = new Option('004 臺灣銀行', '004');
     lists[1] = new Option('005 土地銀行', '005');

@@ -76,7 +76,7 @@ export class TransConfirmComponent implements OnInit {
 
     let transTelegram:TransTelegramData = {};
 
-    transTelegram.tx_code = "7000";
+    transTelegram.tx_code = "2524";
     transTelegram.issuer_account = transData.issuerAccount;
     transTelegram.issuer_id = (transData.issuerBank.value + "00000000000000").substring(0, 8);
     transTelegram.issuer_remark = "transTelegram";
